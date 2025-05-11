@@ -5,7 +5,8 @@ import logging
 
 app = func.FunctionApp()
 
-@app.route(route="HttpExample", auth_level=func.AuthLevel.Anonymous)
+
+@app.route(route="HttpExample", auth_level="anonymous")
 def HttpExample(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
@@ -22,14 +23,15 @@ def HttpExample(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
     else:
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
+            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+            status_code=200
         )
 
+
 @app.timer_trigger(schedule="0 */5 * * * *", arg_name="myTimer", run_on_startup=False,
-              use_monitor=False) 
+                   use_monitor=False)
 def MyTimerFunction(myTimer: func.TimerRequest) -> None:
-    
+
     if myTimer.past_due:
         logging.info('The timer is past due!')
 
