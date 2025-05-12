@@ -1,5 +1,6 @@
 local.settings.json
 .azure
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -174,3 +175,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+.DS_Store
