@@ -1,7 +1,12 @@
-import azure.functions as func
-import datetime
-import json
+"""
+This module defines Azure Functions for an HTTP-triggered function and a timer-triggered function.
+It demonstrates how to handle HTTP requests and execute periodic tasks using Azure Functions.
+"""
+
+# Provides logging capabilities to track events and debug the application.
 import logging
+import azure.functions as func  # Azure Functions Python library.
+
 
 app = func.FunctionApp()
 

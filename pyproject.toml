@@ -6,8 +6,7 @@ authors = [{ name = "r0nny8000", email = "r0nny8000@bea2b.de" }]
 license = { text = "GPL-3.0-only" }
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
-
+dependencies = ["azure-functions (>=1.23.0,<2.0.0)"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
