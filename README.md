@@ -32,3 +32,7 @@ Next is deployment to Azure. The following command will deploy the project to Az
     az storage account create --name cb0tsto --sku Standard_LRS
     az functionapp create --consumption-plan-location germanywestcentral --runtime python --runtime-version 3.12 --functions-version 4 --name cb0t --os-type linux
     func azure functionapp publish cb0t
+
+delete the function app using the following command:
+
+    az group delete --name cb0t
