@@ -1,4 +1,4 @@
-CBOT
+CB0T
 ====
 
 As small and simple bot to buy cryptoocurrency on Kraken using the Kraken API.
@@ -28,5 +28,7 @@ started the Azure Functions project using the following command:
 Next is deployment to Azure. The following command will deploy the project to Azure:
 
     az login
-    az group create --name cbot-rg --location germanywestcentral
-    az storage account create --name cbotstorage --sku Standard_LRS
+    az group create --name cb0trg --location germanywestcentral
+    az storage account create --name cb0tsto --sku Standard_LRS
+    az functionapp create --consumption-plan-location germanywestcentral --runtime python --runtime-version 3.12 --functions-version 4 --name cb0t --os-type linux
+    func azure functionapp publish cb0t
