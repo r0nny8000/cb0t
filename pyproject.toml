@@ -6,8 +6,15 @@ authors = [{ name = "r0nny8000", email = "r0nny8000@bea2b.de" }]
 license = { text = "GPL-3.0-only" }
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["azure-functions (>=1.23.0,<2.0.0)"]
+dependencies = [
+    "azure-functions (>=1.23.0,<2.0.0)",
+    "python-kraken-sdk (>=3.2.2,<4.0.0)",
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.3.7"
+pytest = "^8.3.5"

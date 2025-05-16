@@ -6,31 +6,46 @@ It demonstrates how to handle HTTP requests and execute periodic tasks using Azu
 # Provides logging capabilities to track events and debug the application.
 import logging
 import azure.functions as func  # Azure Functions Python library.
-
+# Importing the Kraken module from cb0t package.
+import cb0t.kraken_api as kraken_api
 
 app = func.FunctionApp()
 
 
-@app.route(route="HttpExample", auth_level="anonymous")
-def HttpExample(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+@app.route(route="ticker", auth_level="anonymous")
+def ticker(req: func.HttpRequest) -> func.HttpResponse:
+    """
+    HTTP triggered function to handle requests for the Kraken ticker.
+    It retrieves the ticker information from the Kraken module and returns it as a JSON response.
+    """
+    logging.info('Ticker function is processing a request.')
 
-    name = req.params.get('name')
-    if not name:
+    # Extracting the 'pair' parameter from the request.
+    pair = req.params.get('pair')
+    if not pair:
         try:
             req_body = req.get_json()
         except ValueError:
             pass
         else:
-            name = req_body.get('name')
+            pair = req_body.get('pair')
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
+    # If 'pair' is provided, fetch the ticker information.
+    if pair:
+        logging.info('Pair: %s', pair)
+        try:
+
+            t = kraken_api.ticker(pair)
+
+        except kraken_api.KrakenAPIException as e:
+            logging.error(str(e))
+            return func.HttpResponse(str(e), status_code=500)
+
+        logging.info('Ticker data: %s', t)
+        return func.HttpResponse(str(t), mimetype="application/json", status_code=200)
+
     else:
-        return func.HttpResponse(
-            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-            status_code=200
-        )
+        return func.HttpResponse("Parameter 'pair' is required.", status_code=400)
 
 
 @app.timer_trigger(schedule="0 */5 * * * *", arg_name="myTimer", run_on_startup=False,
