@@ -54,11 +54,12 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(html, mimetype="text/html", status_code=200)
 
 
-@app.timer_trigger(schedule="0 */5 * * * *", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0 */5 * * * *", arg_name="accumulator", run_on_startup=False,
                    use_monitor=False)
-def MyTimerFunction(myTimer: func.TimerRequest) -> None:
+def accumulator_bot(accumulator: func.TimerRequest) -> None:
+    """accumulate crypto"""
 
-    if myTimer.past_due:
+    if accumulator.past_due:
         logging.info('The timer is past due!')
 
     logging.info('Python timer trigger function executed.')
