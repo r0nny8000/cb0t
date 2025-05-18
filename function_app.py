@@ -5,14 +5,16 @@ It demonstrates how to handle HTTP requests and execute periodic tasks using Azu
 
 # Provides logging capabilities to track events and debug the application.
 import logging
+import os
+
 import azure.functions as func  # Azure Functions Python library.
 
-# Jinja2 template engine for rendering HTML.
 from jinja2 import Environment, FileSystemLoader
+
+# Jinja2 template engine for rendering HTML.
 from kraken.spot import Market
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-import os
 
 app = func.FunctionApp()
 
