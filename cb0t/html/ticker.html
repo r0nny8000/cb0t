@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>cb0t</title>
+</head>
+
+<body>
+    <h1>{{ pair|replace(',', ', ') }}</h1>
+
+    <ul>
+        {% for key, value in ticker.items() %}
+        <li>{{ assets[key]['wsname']|replace('XBT', 'BTC') }}: {{ value['c'][0]|float|round(2) }}</li>
+        {% endfor %}
+    </ul>
+
+
+</body>
+
+</html>

@@ -9,6 +9,7 @@ requires-python = ">=3.12"
 dependencies = [
     "azure-functions (>=1.23.0,<2.0.0)",
     "python-kraken-sdk (>=3.2.2,<4.0.0)",
+    "jinja2 (>=3.1.6,<4.0.0)",
 ]
 
 [build-system]
