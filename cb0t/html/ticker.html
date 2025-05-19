@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <h1>Requested Pair: {{ pair|replace(',', ', ') }}</h1>
+    <h1>Trading Pair(s): {{ pair|replace(',', ', ') }}</h1>
 
     <ul>
         {% for key, value in ticker.items() %}
