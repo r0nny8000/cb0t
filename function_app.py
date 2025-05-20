@@ -12,11 +12,20 @@ import azure.functions as func  # Azure Functions Python library.
 from jinja2 import Environment, FileSystemLoader
 
 # Jinja2 template engine for rendering HTML.
-from kraken.spot import Market
+from kraken.spot import Market, User, Trade
+
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 app = func.FunctionApp()
+
+
+user = User(key=os.getenv('KRAKEN_API_KEY'),
+            secret=os.getenv('KRAKEN_API_SECRET'))
+trade = Trade(key=os.getenv('KRAKEN_API_KEY'),
+              secret=os.getenv('KRAKEN_API_SECRET'))
+env = os.getenv('CB0T_ENV', 'DEV')
+
 
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
@@ -54,6 +63,19 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     html = template.render(pair=pair, ticker=ticker, assets=assets)
 
     return func.HttpResponse(html, mimetype="text/html", status_code=200)
+
+
+@app.route(route="balance", auth_level="anonymous")
+def get_balance(req: func.HttpRequest) -> func.HttpResponse:
+    """Fetches and returns the account balance from Kraken."""
+    balance = user.get_account_balance()
+    return func.HttpResponse(str(balance), mimetype="application/json", status_code=200)
+
+
+@app.route(route="env", auth_level="anonymous")
+def get_env(req: func.HttpRequest) -> func.HttpResponse:
+    """Fetches and returns the environment variables."""
+    return func.HttpResponse(str(env), mimetype="application/json", status_code=200)
 
 
 @app.timer_trigger(schedule="0 */5 * * * *", arg_name="accumulator", run_on_startup=False,

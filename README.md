@@ -33,6 +33,10 @@ Next is deployment to Azure. The following command will deploy the project to Az
     az functionapp create --consumption-plan-location germanywestcentral --runtime python --runtime-version 3.12 --functions-version 4 --name cb0t --os-type linux
     func azure functionapp publish cb0t
 
-delete the function app using the following command:
+Delete the function app using the following command:
 
     az group delete --name cb0t
+
+Activation of the GitHub Actions deployment was done using the following command:
+
+    az functionapp deployment github-actions add --repo "r0nny8000/cb0t" -g cb0trg -n cb0t --login-with-github -b main
