@@ -20,11 +20,11 @@ from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildca
 app = func.FunctionApp()
 
 
-user = User(key=os.getenv('KRAKEN_API_KEY'),
-            secret=os.getenv('KRAKEN_API_SECRET'))
-trade = Trade(key=os.getenv('KRAKEN_API_KEY'),
-              secret=os.getenv('KRAKEN_API_SECRET'))
-env = os.getenv('CB0T_ENV', 'DEV')
+user = User(key=os.getenv('KRAKENAPIKEY'),
+            secret=os.getenv('KRAKENAPISECRET'))
+trade = Trade(key=os.getenv('KRAKENAPIKEY'),
+              secret=os.getenv('KRAKENAPISECRET'))
+env = os.getenv('CB0TENV', 'DEV')
 
 
 # Set up the Jinja2 environment once, at the module level
