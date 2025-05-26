@@ -98,8 +98,6 @@ def accumulate(pair: str):
         logging.info('Trend and bottom conditions not met, skipping.')
         return
 
-    logging.info('Accumulator bot triggered.')
-
     investment = 8.0  # Amount to invest in EUR
     # optimize the amount to accumulate based on the current price
 
