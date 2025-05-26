@@ -100,7 +100,7 @@ def accumulate(pair: str):
 
     logging.info('Accumulator bot triggered.')
 
-    investment = 6.0  # Amount to invest in EUR
+    investment = 8.0  # Amount to invest in EUR
     # optimize the amount to accumulate based on the current price
 
     # check if we have enough balance
