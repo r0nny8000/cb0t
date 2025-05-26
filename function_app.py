@@ -6,16 +6,17 @@ It demonstrates how to handle HTTP requests and execute periodic tasks using Azu
 # Provides logging capabilities to track events and debug the application.
 import logging
 import os
-
+import cb0t.engine as engine
 import azure.functions as func  # Azure Functions Python library.
 
+# Jinja2 template engine for rendering HTML.
 from jinja2 import Environment, FileSystemLoader
 
-# Jinja2 template engine for rendering HTML.
 from kraken.spot import Market, User, Trade
 
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
+import datetime
 
 app = func.FunctionApp()
 
@@ -77,13 +78,42 @@ def get_env(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the environment variables."""
     return func.HttpResponse(str(env), mimetype="application/json", status_code=200)
 
+# schedule: sec, min, hour, day, month, day_of_week
 
-@app.timer_trigger(schedule="0 */5 * * * *", arg_name="accumulator", run_on_startup=False,
-                   use_monitor=False)
-def accumulator_bot(accumulator: func.TimerRequest) -> None:
-    """accumulate crypto"""
 
-    if accumulator.past_due:
-        logging.info('The timer is past due!')
+@app.timer_trigger(schedule="*/20 * * * * *", arg_name="timer", run_on_startup=False, use_monitor=False)
+def accumulate_btc(timer: func.TimerRequest) -> None:
+    """Accumulates crypto periodically."""
+    if timer.past_due:
+        logging.info("The timer is past due! Will continue.")
+    accumulate('XXBTZEUR')  # Accumulate Bitcoin in EUR
+    # accumulate('XETHZEUR')  # Accumulate Ethereum in EUR
+    # accumulate('SOLEUR')  # Accumulate Solana in EUR
 
-    logging.info('Python timer trigger function executed.')
+
+def accumulate(pair: str):
+
+    # check conditions if trend is up or bottom is reached
+    if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):
+        logging.info('Trend and bottom conditions not met, skipping.')
+        return
+
+    logging.info('Accumulator bot triggered.')
+
+    investment = 6.0  # Amount to invest in EUR
+    # optimize the amount to accumulate based on the current price
+
+    # check if we have enough balance
+
+    # increase limit if not in PROD
+
+    # check if environment is set to PROD
+    if env != 'PROD':
+        logging.info('Running not in production environment: %s', env)
+        return
+
+    # create order
+    # use order list to check if oder is filled for the day or a new order is needed
+    # eg. run hourly, let the order open for 1h, if not filled, create a new with new parameters
+    # if open higher that current price, set the limit lower, higher limit optherwise
+    # or include volume into the decuision making
