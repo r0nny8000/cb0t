@@ -78,6 +78,7 @@ def get_env(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the environment variables."""
     return func.HttpResponse(str(env), mimetype="application/json", status_code=200)
 
+
 # schedule: sec, min, hour, day, month, day_of_week
 
 
@@ -86,19 +87,21 @@ def accumulate_btc(timer: func.TimerRequest) -> None:
     """Accumulates crypto periodically."""
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
-    accumulate('XXBTZEUR')  # Accumulate Bitcoin in EUR
+    accumulate('XXBTZEUR', 4)  # Accumulate Bitcoin in EUR
     # accumulate('XETHZEUR')  # Accumulate Ethereum in EUR
     # accumulate('SOLEUR')  # Accumulate Solana in EUR
 
 
-def accumulate(pair: str):
-
+def accumulate(pair: str, amount: float = 4.0) -> None:
+    """
+    Accumulates a specified cryptocurrency by checking the trend and bottom conditions.
+    """
     # check conditions if trend is up or bottom is reached
     if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):
         logging.info('Trend and bottom conditions not met, skipping.')
         return
 
-    investment = 8.0  # Amount to invest in EUR
+    # Amount to invest in EUR
     # optimize the amount to accumulate based on the current price
 
     # check if we have enough balance
@@ -115,3 +118,23 @@ def accumulate(pair: str):
     # eg. run hourly, let the order open for 1h, if not filled, create a new with new parameters
     # if open higher that current price, set the limit lower, higher limit optherwise
     # or include volume into the decuision making
+
+
+def exit_market(pair: str) -> None:
+    """
+    Sets a stop loss order for a specified cryptocurrency pair.
+    """
+    logging.info('Setting stop loss for %s at %f', pair, 4.0)
+    # Implement the logic to set a stop loss order here.
+    # if trend not up, sell everything
+
+
+def re_entry_market(pair: str) -> None:
+    """
+    Enters a position for a specified cryptocurrency pair.
+    """
+    logging.info('Entering position for %s', pair)
+    # Implement the logic to enter a position here.
+    # if trend is up, buy more
+    # if bottom is reached, buy more
+    # if top is reached, sell everything
