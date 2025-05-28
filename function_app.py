@@ -6,17 +6,14 @@ It demonstrates how to handle HTTP requests and execute periodic tasks using Azu
 # Provides logging capabilities to track events and debug the application.
 import logging
 import os
-import cb0t.engine as engine
+
 import azure.functions as func  # Azure Functions Python library.
-
-# Jinja2 template engine for rendering HTML.
 from jinja2 import Environment, FileSystemLoader
-
 from kraken.spot import Market, User, Trade
-
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-import datetime
+
+import cb0t.engine as engine
 
 app = func.FunctionApp()
 
@@ -26,7 +23,7 @@ user = User(key=os.getenv('KRAKENAPIKEY'),
 trade = Trade(key=os.getenv('KRAKENAPIKEY'),
               secret=os.getenv('KRAKENAPISECRET'))
 env = os.getenv('CB0TENV', 'DEV')
-
+env_schedule = {'DEV': '*/10 * * * * *', 'PROD': '0 0 8 * * *'}
 
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
@@ -82,42 +79,49 @@ def get_env(req: func.HttpRequest) -> func.HttpResponse:
 # schedule: sec, min, hour, day, month, day_of_week
 
 
-@app.timer_trigger(schedule="*/20 * * * * *", arg_name="timer", run_on_startup=False, use_monitor=False)
+@app.timer_trigger(schedule=env_schedule[env], arg_name="timer", run_on_startup=False, use_monitor=False)
 def accumulate_btc(timer: func.TimerRequest) -> None:
     """Accumulates crypto periodically."""
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
+
     accumulate('XXBTZEUR', 4)  # Accumulate Bitcoin in EUR
     # accumulate('XETHZEUR')  # Accumulate Ethereum in EUR
     # accumulate('SOLEUR')  # Accumulate Solana in EUR
 
 
-def accumulate(pair: str, amount: float = 4.0) -> None:
+def accumulate(pair: str, euro: float) -> None:
     """
     Accumulates a specified cryptocurrency by checking the trend and bottom conditions.
     """
     # check conditions if trend is up or bottom is reached
     if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):
-        logging.info('Trend and bottom conditions not met, skipping.')
+        logging.info('%s Trend and bottom conditions not met, skipping.', pair)
         return
 
-    # Amount to invest in EUR
     # optimize the amount to accumulate based on the current price
+    accelerated_euro = engine.accelerate(pair, euro)
+    volume = round(accelerated_euro / engine.get_asset_value(pair), 8)
 
-    # check if we have enough balance
-
-    # increase limit if not in PROD
+    logging.info('%s Accumulating %f with %f EUR',
+                 pair, volume, accelerated_euro)
 
     # check if environment is set to PROD
     if env != 'PROD':
-        logging.info('Running not in production environment: %s', env)
-        return
+        logging.warning('%s Env %s is not PROD. Set volume to 0.', pair, env)
+        volume = 0
 
     # create order
-    # use order list to check if oder is filled for the day or a new order is needed
-    # eg. run hourly, let the order open for 1h, if not filled, create a new with new parameters
-    # if open higher that current price, set the limit lower, higher limit optherwise
-    # or include volume into the decuision making
+    try:
+        transaction = trade.create_order(ordertype='market',
+                                         pair=pair,
+                                         side='buy',
+                                         volume=volume)  # pylint: disable=line-too-long
+
+        logging.info('%s Order created: %s', pair, transaction)
+
+    except Exception as e:  # pylint: disable=broad-except
+        logging.error('%s %s', pair, str(e).replace('\n', ' '))
 
 
 def exit_market(pair: str) -> None:

@@ -4,7 +4,6 @@ This is the engine module for the cb0t trading bot, which interacts
 with the Kraken API to fetch market data and perform calculations.
 """
 import time
-import logging
 
 from kraken.spot import Market
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
@@ -61,9 +60,6 @@ def get_sma(pair: str, interval: str, length: int) -> float:
     if sma is None:
         raise EngineException(f"SMA calculation failed for {pair}.")
 
-    logging.info('SMA for %s at %s interval with length %d is %f',
-                 pair, interval, length, sma)
-
     return sma
 
 
@@ -73,7 +69,6 @@ def get_asset_value(pair: str) -> float:
         ticker = Market().get_ticker(pair)
 
         for v in ticker.values():
-            logging.info('Value of %s is %s', pair, v['c'][0])
             return float(v['c'][0])
 
     except (KrakenUnknownAssetError, KrakenUnknownAssetPairError) as e:
@@ -100,7 +95,17 @@ def top_is_reached(pair: str) -> bool:
     return False
 
 
-def accelerate(amount: float) -> float:
+def accelerate(pair: str, amount: float) -> float:
     """ Perform an acceleration action. """
-    # Placeholder for acceleration logic
-    return amount
+    current_value = get_asset_value(pair)
+    # Implement your acceleration logic here
+
+    try:
+        ohlc = Market().get_ohlc(pair, intervals_min['1w'])
+
+    except (KrakenUnknownAssetError, KrakenUnknownAssetPairError, KrakenInvalidArgumentsError) as e:
+        raise EngineException(str(e).replace('\n', ' ')) from e
+
+    ath = max(float(candle[2]) for candle in ohlc[pair])
+
+    return round(ath / current_value * amount, 2)
