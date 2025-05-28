@@ -1,0 +1,12 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<h1>Balance</h1>
+
+<ul>
+    {% for key, value in balance.items() %}
+    <li>{{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR') }}: {{ value|float|round(8) }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

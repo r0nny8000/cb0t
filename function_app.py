@@ -67,13 +67,23 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
 def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the account balance from Kraken."""
     balance = user.get_account_balance()
-    return func.HttpResponse(str(balance), mimetype="application/json", status_code=200)
+
+    # Render the HTML template with the balance data.
+    template = jinja_env.get_template("balance.html.j2")
+    html = template.render(balance=balance)
+
+    return func.HttpResponse(html, mimetype="text/html", status_code=200)
 
 
 @app.route(route="env", auth_level="anonymous")
 def get_env(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the environment variables."""
-    return func.HttpResponse(str(env), mimetype="application/json", status_code=200)
+
+    # Render the HTML template with the environment data.
+    template = jinja_env.get_template("env.html.j2")
+    html = template.render(env=env)
+
+    return func.HttpResponse(html, mimetype="text/html", status_code=200)
 
 
 # schedule: sec, min, hour, day, month, day_of_week

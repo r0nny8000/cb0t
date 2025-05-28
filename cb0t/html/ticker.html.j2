@@ -4,7 +4,7 @@
 <h1>Ticker</h1>
 
 
-<h2>Trading Pair(s): {{ pair|replace(',', ', ') }}</h2>
+<h2>{{ pair|replace(',', ', ') }}</h2>
 
 <ul>
     {% for key, value in ticker.items() %}

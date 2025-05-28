@@ -8,7 +8,40 @@
 
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body"  data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">cb0t</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/api/balance">Balance</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Ticker
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/api/ticker?pair=BTCEUR">BTC/EUR</a></li>
+            <li><a class="dropdown-item" href="/api/ticker?pair=ETHEUR">ETH/EUR</a></li>
+            <li><a class="dropdown-item" href="/api/ticker?pair=SOLEUR">SOL/EUR</a></li>
+            <li><a class="dropdown-item" href="/api/ticker?pair=PAXGEUR">PAXG/EUR</a></li>
+          </ul>
+        </li>
+        <a class="nav-link" href="/api/env">Environment</a>
+        <a class="nav-link disabled" aria-disabled="true">Accumulator</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
 {% block content %}{% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
 </html>
+
+
+
