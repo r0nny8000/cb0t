@@ -57,7 +57,7 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(str(e), status_code=500)
 
     # Render the HTML template with the ticker data.
-    template = jinja_env.get_template("ticker.html.jinja2")
+    template = jinja_env.get_template("ticker.html.j2")
     html = template.render(pair=pair, ticker=ticker, assets=assets)
 
     return func.HttpResponse(html, mimetype="text/html", status_code=200)
