@@ -23,7 +23,7 @@ user = User(key=os.getenv('KRAKENAPIKEY'),
 trade = Trade(key=os.getenv('KRAKENAPIKEY'),
               secret=os.getenv('KRAKENAPISECRET'))
 env = os.getenv('CB0TENV', 'DEV')
-env_schedule = {'DEV': '*/10 * * * * *', 'PROD': '0 0 8 * * *'}
+env_schedule = {'DEV': '*/10 * * * * *', 'PROD': '0 0 6 * * *'}
 
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
