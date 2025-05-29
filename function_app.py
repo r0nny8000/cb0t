@@ -94,25 +94,35 @@ def accumulate(pair: str, euro: float) -> None:
     """
     Accumulates a specified cryptocurrency by checking the trend and bottom conditions.
     """
-    # check conditions if trend is up or bottom is reached
-    if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):
-        logging.info('%s Trend and bottom conditions not met, skipping.', pair)
-        return
-
-    # optimize the amount to accumulate based on the current price
-    accelerated_euro = engine.accelerate(pair, euro)
-    volume = round(accelerated_euro / engine.get_asset_value(pair), 8)
-
-    logging.info('%s Accumulating %f with %f EUR',
-                 pair, volume, accelerated_euro)
-
-    # check if environment is set to PROD
-    if env != 'PROD':
-        logging.warning('%s Env %s is not PROD. Set volume to 0.', pair, env)
-        volume = 0
-
-    # create order
     try:
+
+        # check conditions if trend is up or bottom is reached
+        if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):
+            logging.info(
+                '%s Trend and bottom conditions not met, skipping.', pair)
+            return
+
+        # optimize the amount to accumulate based on the current price
+        accelerated_euro = engine.accelerate(pair, euro)
+        volume = round(accelerated_euro / engine.get_asset_value(pair), 8)
+
+        # check if minimum volume is met
+        asset_pair = Market().get_asset_pairs(pair)
+
+        ordermin = float(asset_pair[pair]['ordermin'])
+        if volume < ordermin:
+            logging.info('%s Volume %f is below minimum required %f, increasing volume.',
+                         pair, volume, ordermin)
+            volume = ordermin
+
+        logging.info('%s Accumulating %f with %f EUR',
+                     pair, volume, accelerated_euro)
+
+        # check if environment is set to PROD
+        if env != 'PROD':
+            raise RuntimeError(f'Not in production environment: {env}')
+
+        # create order
         transaction = trade.create_order(ordertype='market',
                                          pair=pair,
                                          side='buy',
