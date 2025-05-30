@@ -162,3 +162,13 @@ def re_entry_market(pair: str) -> None:
     # if trend is up, buy more
     # if bottom is reached, buy more
     # if top is reached, sell everything
+
+
+def calculate_cost_basis(pair: str) -> float:
+    """
+    - Check which amount is available in account
+    - get a list of tha las trated
+    - split the amount betweeen the last trades
+    - sum upf the costs of this trades and to the amount: this is the cost basis
+
+    """
