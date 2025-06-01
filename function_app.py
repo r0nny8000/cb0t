@@ -30,6 +30,14 @@ template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
 jinja_env = Environment(loader=FileSystemLoader(template_dir))
 
 
+def html(template: str, *args, **kwargs) -> func.HttpResponse:
+    """
+    Renders the HTML template with the current environment and schedule.
+    """
+    template = jinja_env.get_template(template)
+    return func.HttpResponse(template.render(*args, **kwargs), mimetype="text/html", status_code=200)
+
+
 @app.route(route="ticker", auth_level="anonymous", )
 def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     """
@@ -56,37 +64,20 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(str(e))
         return func.HttpResponse(str(e), status_code=500)
 
-    # Render the HTML template with the ticker data.
-    template = jinja_env.get_template("ticker.html.j2")
-    html = template.render(pair=pair, ticker=ticker, assets=assets)
-
-    return func.HttpResponse(html, mimetype="text/html", status_code=200)
+    return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets)
 
 
 @app.route(route="balance", auth_level="anonymous")
 def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the account balance from Kraken."""
     balance = user.get_account_balance()
-
-    # Render the HTML template with the balance data.
-    template = jinja_env.get_template("balance.html.j2")
-    html = template.render(balance=balance)
-
-    return func.HttpResponse(html, mimetype="text/html", status_code=200)
+    return html(template="balance.html.j2", balance=balance)
 
 
 @app.route(route="env", auth_level="anonymous")
 def get_env(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the environment variables."""
-
-    # Render the HTML template with the environment data.
-    template = jinja_env.get_template("env.html.j2")
-    html = template.render(env=env)
-
-    return func.HttpResponse(html, mimetype="text/html", status_code=200)
-
-
-# schedule: sec, min, hour, day, month, day_of_week
+    return html("env.html.j2", env=env)
 
 
 @app.timer_trigger(schedule=env_schedule[env], arg_name="timer", run_on_startup=False, use_monitor=False)
