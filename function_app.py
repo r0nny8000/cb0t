@@ -49,7 +49,8 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     pair = req.params.get('pair')
 
     if not pair:
-        return func.HttpResponse("Parameter 'pair' is required.", status_code=400)
+        # Default to Bitcoin in USD if no pair is provided.
+        pair = 'XXBTZUSD,XETHZUSD,SOLUSD'
 
     # If 'pair' is provided, fetch the ticker information.
     logging.info("Ticker function is processing with pair: %s", pair)
