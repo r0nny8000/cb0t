@@ -14,23 +14,25 @@
 
     <a class="navbar-brand bi bi-currency-bitcoin text-warning" style="font-size: 2rem;" href="#"></a>
 
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+
+      <div class="navbar-nav me-auto mb-2 mb-lg-0">
         <a class="nav-link {% if active_page == 'balance' %}active{% endif %}" href="/api/balance">Balance</a>
         <a class="nav-link {% if active_page == 'ticker' %}active{% endif %}" href="/api/ticker?pair=BTCEUR">Ticker</a>
         <a class="nav-link {% if active_page == 'env' %}active{% endif %}" href="/api/env">Environment</a>
         <a class="nav-link disabled" aria-disabled="true">Accumulator</a>
       </div>
+
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+
     </div>
-
-    <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
 
   </div>
 </nav>
