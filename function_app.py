@@ -38,7 +38,12 @@ def html(template: str, *args, **kwargs) -> func.HttpResponse:
     return func.HttpResponse(template.render(*args, **kwargs), mimetype="text/html", status_code=200)
 
 
-@app.route(route="ticker", auth_level="anonymous", )
+@app.route(route="{*path}", auth_level="anonymous")
+def index(req: func.HttpRequest) -> func.HttpResponse:
+    return html(template="index.html.j2")
+
+
+@app.route(route="ticker", auth_level="anonymous")
 def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     """
     HTTP triggered function to handle requests for the Kraken ticker.
