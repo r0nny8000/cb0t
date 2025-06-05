@@ -38,12 +38,12 @@ def html(template: str, *args, **kwargs) -> func.HttpResponse:
     return func.HttpResponse(template.render(*args, **kwargs), mimetype="text/html", status_code=200)
 
 
-@app.route(route="{*path}", auth_level="anonymous")
+@app.route(route="{*path}", auth_level="anonymous", methods=["GET"])
 def index(req: func.HttpRequest) -> func.HttpResponse:
-    return html(template="index.html.j2")
+    return html(template="index.html.j2", headers=req.headers)
 
 
-@app.route(route="ticker", auth_level="anonymous")
+@app.route(route="ticker", auth_level="anonymous", methods=["GET"])
 def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     """
     HTTP triggered function to handle requests for the Kraken ticker.
@@ -73,14 +73,14 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets)
 
 
-@app.route(route="balance", auth_level="anonymous")
+@app.route(route="balance", auth_level="anonymous", methods=["GET"])
 def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the account balance from Kraken."""
     balance = user.get_account_balance()
     return html(template="balance.html.j2", balance=balance)
 
 
-@app.route(route="env", auth_level="anonymous")
+@app.route(route="env", auth_level="anonymous", methods=["GET"])
 def get_env(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the environment variables."""
     return html("env.html.j2", env=env)
