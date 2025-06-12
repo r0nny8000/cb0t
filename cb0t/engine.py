@@ -77,17 +77,17 @@ def get_asset_value(pair: str) -> float:
 
 def trend_is_up(pair: str) -> bool:
     """ Check if the trend is up. """
-    return get_asset_value(pair) > get_sma(pair, '1d', 120)
+    return get_asset_value(pair) > get_sma(pair, '1d', 50)
 
 
 def trend_is_down(pair: str) -> bool:
     """ Check if the trend is down. """
-    return get_asset_value(pair) < get_sma(pair, '1d', 120)
+    return get_asset_value(pair) < get_sma(pair, '1d', 50)
 
 
 def bottom_is_reached(pair: str) -> bool:
     """ Check if the bottom is reached. """
-    return get_asset_value(pair) < get_sma(pair, '1w', 200)
+    return get_asset_value(pair) < get_sma(pair, '1w', 150)
 
 
 def top_is_reached(pair: str) -> bool:
