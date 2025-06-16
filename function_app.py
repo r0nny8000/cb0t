@@ -23,7 +23,7 @@ user = User(key=os.getenv('KRAKENAPIKEY'),
 trade = Trade(key=os.getenv('KRAKENAPIKEY'),
               secret=os.getenv('KRAKENAPISECRET'))
 env = os.getenv('CB0TENV', 'DEV')
-env_schedule = {'DEV': '*/10 * * * * *', 'PROD': '0 0 16 */2 * *'}
+env_schedule = {'DEV': '*/10 * * * * *', 'PROD': '0 0 16 * * *'}
 
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
@@ -92,16 +92,22 @@ def accumulate_btc(timer: func.TimerRequest) -> None:
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
 
-    accumulate('XXBTZEUR', 4)  # Accumulate Bitcoin in EUR
-    # accumulate('XETHZEUR')  # Accumulate Ethereum in EUR
-    # accumulate('SOLEUR')  # Accumulate Solana in EUR
+    accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
+    # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
+    # accumulate('SOLEUR', 8, 8)  # Accumulate x Solana in EUR in y days
 
 
-def accumulate(pair: str, euro: float) -> None:
+def accumulate(pair: str, euro: float, days: int) -> None:
     """
     Accumulates a specified cryptocurrency by checking the trend and bottom conditions.
     """
     try:
+
+        # check investment schedule
+        if not engine.investment_schedule(days):
+            logging.info(
+                '%s Investment schedule of %s days not met, skipping.', pair, days)
+            return
 
         # check conditions if trend is up or bottom is reached
         if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):

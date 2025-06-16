@@ -109,3 +109,8 @@ def accelerate(pair: str, amount: float) -> float:
     ath = max(float(candle[2]) for candle in ohlc[pair])
 
     return round(ath / current_value * amount, 2)
+
+
+def investment_schedule(days: int) -> bool:
+    """ Check if the investment schedule is met based on the current day. """
+    return time.localtime().tm_mday % days == 0
