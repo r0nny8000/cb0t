@@ -40,7 +40,7 @@ def html(template: str, *args, **kwargs) -> func.HttpResponse:
 
 @app.route(route="{*path}", auth_level="anonymous", methods=["GET"])
 def index(req: func.HttpRequest) -> func.HttpResponse:
-    return html(template="index.html.j2", headers=req.headers)
+    return html(template="index.html.j2", headers=req.method)
 
 
 @app.route(route="ticker", auth_level="anonymous", methods=["GET"])
