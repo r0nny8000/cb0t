@@ -8,18 +8,17 @@ class BTCUSD(Asset):
         """Initializes the BTCUSD asset with the given pair."""
         super().__init__("XXBTZUSD")
 
-    def RSI_above(self, value: int = 50) -> bool:
-        """Returns True if RSI is above the given value."""
-        return True
-
     def RSI_below(self, value: int = 50) -> bool:
         """Returns True if RSI is below the given value."""
         return True
 
-    def Daily_SMA_above(self) -> float:
+    def RSI_above(self, value: int = 50) -> bool:
+        return not self.RSI_below(value)
+
+    def Weekly_SMA_below(self, value: int = 50) -> bool:
         """Calculates and returns the SMA of the data."""
         return None
 
-    def Daily_SMA_below(self) -> float:
+    def Weekly_SMA_above(self, value: int = 50) -> bool:
         """Calculates and returns the SMA of the data."""
-        return None
+        return not self.Weekly_SMA_below(value)
