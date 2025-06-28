@@ -20,9 +20,11 @@ intervals_sec = {'1m': 60, '5m': 300, '15m': 900, '30m': 1800,
                  '1h': 3600, '4h': 14400, '1d': 86400, '1w': 604800, '2w': 1209600}
 
 
-def get_ohlc(pair: str, interval: str, length: int):
+def get_ohlc(pair: str, interval: str, length: int = 720):
     """Fetches OHLC (Open, High, Low, Close) data for a given currency pair
-    and interval from the Kraken API."""
+    and interval from the Kraken API.
+    Returns at max 720 time steps per request.
+    """
 
     # Convert length to seconds
     since = time.time() - intervals_sec[interval] * length

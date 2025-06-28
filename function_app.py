@@ -92,6 +92,14 @@ def accumulate_btc(timer: func.TimerRequest) -> None:
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
 
+    # btcusd = BTCUSD(rsi_length=14)
+
+    #  x = lambda a : a + 10
+    # btcusd_strategy = lambda btcusd: btcusd.rsi_below(50) or btcusd.wsma_below(200)
+
+    # accumulate(btcusd, btcusd_strategy)
+    # if btcusd.btcusd_strategy(): buy
+
     accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
     # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
     # accumulate('SOLEUR', 8, 8)  # Accumulate x Solana in EUR in y days
