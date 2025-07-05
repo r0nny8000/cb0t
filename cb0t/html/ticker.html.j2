@@ -3,10 +3,26 @@
 
 {% block content %}
 
-<ul>
-    {% for key, value in ticker.items() %}
-    <li>{{ assets[key]['wsname']|replace('XBT', 'BTC') }}: {{ value['c'][0]|float|round(2) }}</li>
-    {% endfor %}
-</ul>
+<div class="table-responsive">
+    <table class="table table-dark table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Asset</th>
+            <th>Symbol</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for key, value in ticker.items() %}
+        <tr>
+            <td>{{ assets[key]['wsname']|replace('XBT', 'BTC') }}</td>
+            <td>{{ key }}</td>
+            <td>{{ value['c'][0]|float|round(2) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+
 
 {% endblock %}

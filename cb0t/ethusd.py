@@ -5,9 +5,9 @@ from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildca
 from cb0t.asset import Asset
 
 
-class BTCUSD(Asset):
-    """Represents the BTCUSD asset."""
+class ETHUSD(Asset):
+    """Represents the ETHUSD asset."""
 
     def __init__(self):
-        """Initializes the BTCUSD asset with the given pair."""
-        super().__init__("XXBTZUSD")
+        """Initializes the ETHUSD asset with the given pair."""
+        super().__init__("XETHZUSD")
