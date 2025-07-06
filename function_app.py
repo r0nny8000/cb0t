@@ -94,7 +94,7 @@ def accumulate_btc(timer: func.TimerRequest) -> None:
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
 
-    # btcusd = BTCUSD(rsi_length=14)
+    # btcusd = BTCUSD()
 
     #  x = lambda a : a + 10
     # btcusd_strategy = lambda btcusd: btcusd.rsi_below(50) or btcusd.wsma_below(200)
@@ -155,26 +155,6 @@ def accumulate(pair: str, euro: float, days: int) -> None:
 
     except Exception as e:  # pylint: disable=broad-except
         logging.error('%s %s', pair, str(e).replace('\n', ' '))
-
-
-def exit_market(pair: str) -> None:
-    """
-    Sets a stop loss order for a specified cryptocurrency pair.
-    """
-    logging.info('Setting stop loss for %s at %f', pair, 4.0)
-    # Implement the logic to set a stop loss order here.
-    # if trend not up, sell everything
-
-
-def re_entry_market(pair: str) -> None:
-    """
-    Enters a position for a specified cryptocurrency pair.
-    """
-    logging.info('Entering position for %s', pair)
-    # Implement the logic to enter a position here.
-    # if trend is up, buy more
-    # if bottom is reached, buy more
-    # if top is reached, sell everything
 
 
 def calculate_cost_basis(pair: str) -> float:
