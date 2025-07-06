@@ -10,6 +10,8 @@
             <th>Asset</th>
             <th>Symbol</th>
             <th>Price</th>
+            <th>Order min Volume</th>
+            <th>Order min Price</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -18,6 +20,8 @@
             <td>{{ assets[key]['wsname']|replace('XBT', 'BTC') }}</td>
             <td>{{ key }}</td>
             <td>{{ value['c'][0]|float|round(2) }}</td>
+            <td>{{ "%.8f"|format(asset_pair[key]['ordermin']|float) }}</td>
+            <td>{{ "%.2f"|format(asset_pair[key]['ordermin']|float * value['c'][0]|float) }}</td>
         </tr>
         {% endfor %}
     </tbody>

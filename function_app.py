@@ -64,13 +64,15 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
 
         ticker = Market().get_ticker(pair)
         assets = Market().get_asset_pairs(pair)
+        asset_pair = Market().get_asset_pairs(pair)
+
         logging.info('Ticker data: %s', ticker)
 
     except (KrakenUnknownAssetError, KrakenUnknownAssetPairError) as e:
         logging.error(str(e))
         return func.HttpResponse(str(e), status_code=500)
 
-    return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets)
+    return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets, asset_pair=asset_pair)
 
 
 @app.route(route="balance", auth_level="anonymous", methods=["GET"])
