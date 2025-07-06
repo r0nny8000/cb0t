@@ -1,5 +1,5 @@
 """ imports """
-from cb0t.btcusd import BTCUSD
+from cb0t.asset_pairs import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from cb0t.asset import Asset
 
 

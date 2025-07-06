@@ -62,27 +62,31 @@ class Asset():
 
         return df
 
-    def RSI_below(self, threshold: int = 50, window: int = 14) -> bool:
+    def calculate_rsi(self, window: int = 14) -> pd.DataFrame:
+        self.data_daily['change'] = self.data_daily['close'].astype(
+            float).diff()
+        self.data_daily['gain'] = self.data_daily.change.mask(
+            self.data_daily.change < 0, 0.0)
+        self.data_daily['loss'] = - \
+            self.data_daily.change.mask(self.data_daily.change > 0, -0.0)
+
+        # Calculate average gain and loss
+        self.data_daily['avg_gain'] = self.data_daily['gain'].rolling(
+            window=window, min_periods=window).mean()
+        self.data_daily['avg_loss'] = self.data_daily['loss'].rolling(
+            window=window, min_periods=window).mean()
+
+        self.data_daily['rs'] = self.data_daily.avg_gain / \
+            self.data_daily.avg_loss
+        self.data_daily['rsi'] = 100 - (100 / (1 + self.data_daily.rs))
+
+        return self.data_daily
+
+    def RSI_below(self, threshold: int = 50) -> bool:
         """Returns True if RSI is below the given value."""
 
         if 'rsi' not in self.data_daily.columns:
-
-            self.data_daily['change'] = self.data_daily['close'].astype(
-                float).diff()
-            self.data_daily['gain'] = self.data_daily.change.mask(
-                self.data_daily.change < 0, 0.0)
-            self.data_daily['loss'] = - \
-                self.data_daily.change.mask(self.data_daily.change > 0, -0.0)
-
-            # Calculate average gain and loss
-            self.data_daily['avg_gain'] = self.data_daily['gain'].rolling(
-                window=window, min_periods=window).mean()
-            self.data_daily['avg_loss'] = self.data_daily['loss'].rolling(
-                window=window, min_periods=window).mean()
-
-            self.data_daily['rs'] = self.data_daily.avg_gain / \
-                self.data_daily.avg_loss
-            self.data_daily['rsi'] = 100 - (100 / (1 + self.data_daily.rs))
+            self.calculate_rsi()
 
         return self.data_daily['rsi'].iloc[-1] < threshold
 
