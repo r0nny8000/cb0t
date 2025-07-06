@@ -9,9 +9,9 @@
         <tr>
             <th>Asset</th>
             <th>Symbol</th>
-            <th>Price</th>
-            <th>Order min Volume</th>
-            <th>Order min Price</th>
+            <th style="text-align: right;">Price</th>
+            <th style="text-align: right;">Order min Volume</th>
+            <th style="text-align: right;">Order min Price</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -19,9 +19,9 @@
         <tr>
             <td>{{ assets[key]['wsname']|replace('XBT', 'BTC') }}</td>
             <td>{{ key }}</td>
-            <td>{{ value['c'][0]|float|round(2) }}</td>
-            <td>{{ "%.8f"|format(asset_pair[key]['ordermin']|float) }}</td>
-            <td>{{ "%.2f"|format(asset_pair[key]['ordermin']|float * value['c'][0]|float) }}</td>
+            <td style="text-align: right;">{{ value['c'][0]|float|round(2) }}</td>
+            <td style="text-align: right;">{{ "%.8f"|format(asset_pair[key]['ordermin']|float) }}</td>
+            <td style="text-align: right;">{{ "%.2f"|format(asset_pair[key]['ordermin']|float * value['c'][0]|float) }}</td>
         </tr>
         {% endfor %}
     </tbody>
