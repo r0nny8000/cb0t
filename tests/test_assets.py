@@ -4,6 +4,9 @@ from cb0t.asset import Asset
 
 
 def print_dataframe(test_name, asset):
+    """
+    Prints the test name, asset pair, and the last 4 rows of the asset's daily and weekly dataframes.
+    """
 
     print(f"\n\nTesting {test_name} with pair: {asset.pair}")
     print("")
