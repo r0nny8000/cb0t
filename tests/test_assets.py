@@ -31,7 +31,7 @@ def test_init():
     print_dataframe("INIT", btcusd)
 
 
-def test_RSI():
+def test_rsi():
     """
     Test the RSI method of the BTCUSD class.
     """
@@ -55,7 +55,7 @@ def test_RSI():
     assert btcusd.RSI_above(50) == (rsi > 50)
 
 
-def test_SMA():
+def test_sma():
     """
     Test the SMA method of the BTCUSD class.
     """
