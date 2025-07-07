@@ -1,1 +1,2 @@
 disable=logging-fstring-interpolation
+disable=line-too-long
