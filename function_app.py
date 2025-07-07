@@ -104,7 +104,7 @@ def accumulate_btc(timer: func.TimerRequest) -> None:
     else:
         logging.info("Skipping BTC accumulation, strategy not met.")
     """
-    accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
+    # accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
     # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
     # accumulate('SOLEUR', 8, 8)  # Accumulate x Solana in EUR in y days
 
