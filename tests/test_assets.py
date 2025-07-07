@@ -81,12 +81,12 @@ def test_sma():
 
     print_dataframe("SMA", btcusd)
 
-    assert btcusd.price_below_weekly_SMA(50) in [True, False]
-    assert btcusd.price_above_weekly_SMA(50) in [True, False]
+    assert btcusd.below_Weekly_SMA(50) in [True, False]
+    assert btcusd.above_Weekly_SMA(50) in [True, False]
 
     price = btcusd.get_asset_price()
     assert price > 0
-    assert btcusd.price_below_weekly_SMA(50) == (
+    assert btcusd.below_Weekly_SMA(50) == (
         price < btcusd.df_1w['sma_50'].iloc[-1])
-    assert btcusd.price_above_weekly_SMA(50) == (
+    assert btcusd.above_Weekly_SMA(50) == (
         price > btcusd.df_1w['sma_50'].iloc[-1])

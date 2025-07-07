@@ -12,6 +12,8 @@ from jinja2 import Environment, FileSystemLoader
 from kraken.spot import Market, User, Trade
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
+from cb0t.asset_pairs import *
+from cb0t.asset import Asset
 
 import cb0t.engine as engine
 
@@ -94,14 +96,14 @@ def accumulate_btc(timer: func.TimerRequest) -> None:
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
 
-    # btcusd = BTCUSD()
+    """
+    btceur = BTCEUR()
 
-    #  x = lambda a : a + 10
-    # btcusd_strategy = lambda btcusd: btcusd.rsi_below(50) or btcusd.wsma_below(200)
-
-    # accumulate(btcusd, btcusd_strategy)
-    # if btcusd.btcusd_strategy(): buy
-
+    if btceur.RSI_below(44) or btceur.below_Weekly_SMA(200):
+        logging.info("Accumulating BTC with strategy")
+    else:
+        logging.info("Skipping BTC accumulation, strategy not met.")
+    """
     accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
     # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
     # accumulate('SOLEUR', 8, 8)  # Accumulate x Solana in EUR in y days

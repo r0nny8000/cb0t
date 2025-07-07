@@ -26,7 +26,7 @@ class Asset():
         self.df_1w = self.get_ohlc(pair, '1w', 720)
 
         logging.info(
-            f"Init Asset: {self.pair} df length 1d: {len(self.df_1d)} 1w: {len(self.df_1w)}")
+            f"{self.pair} initialized with {len(self.df_1d)} daily and  {len(self.df_1w)} weekly data points.")
 
     def get_ohlc(self, pair: str, interval: str, length: int = 720):
         """Fetches OHLC (Open, High, Low, Close) data for a given currency pair
@@ -120,7 +120,7 @@ class Asset():
     def RSI_above(self, threshold: int = 50) -> bool:
         return not self.RSI_below(threshold)
 
-    def price_below_weekly_SMA(self, window: int) -> bool:
+    def below_Weekly_SMA(self, window: int) -> bool:
         """Calculates and returns the SMA of the data."""
         column_name = 'sma_' + str(window)
 
@@ -132,6 +132,6 @@ class Asset():
 
         return self.get_asset_price() < self.df_1w[column_name].iloc[-1]
 
-    def price_above_weekly_SMA(self, window: int) -> bool:
+    def above_Weekly_SMA(self, window: int) -> bool:
         """Calculates and returns the SMA of the data."""
-        return not self.price_below_weekly_SMA(window)
+        return not self.below_Weekly_SMA(window)
