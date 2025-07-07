@@ -1,4 +1,5 @@
 import time
+import logging
 import pandas as pd
 
 
@@ -23,6 +24,9 @@ class Asset():
         self.pair = pair
         self.df_1d = self.get_ohlc(pair, '1d', 720)
         self.df_1w = self.get_ohlc(pair, '1w', 720)
+
+        logging.info(
+            f"Init Asset: {self.pair} df length 1d: {len(self.df_1d)} 1w: {len(self.df_1w)}")
 
     def get_ohlc(self, pair: str, interval: str, length: int = 720):
         """Fetches OHLC (Open, High, Low, Close) data for a given currency pair
@@ -108,6 +112,9 @@ class Asset():
         if 'rsi' not in self.df_1d.columns:
             self.calculate_rsi()
 
+        logging.info(
+            f"{self.pair} RSI: {self.df_1d['rsi'].iloc[-1]} Threshold: {threshold}")
+
         return self.df_1d['rsi'].iloc[-1] < threshold
 
     def RSI_above(self, threshold: int = 50) -> bool:
@@ -119,6 +126,9 @@ class Asset():
 
         if column_name not in self.df_1w.columns:
             self.calculate_sma(window)
+
+        logging.info(
+            f"{self.pair} Price: {self.get_asset_price()} Weekly SMA: {self.df_1w[column_name].iloc[-1]}")
 
         return self.get_asset_price() < self.df_1w[column_name].iloc[-1]
 
