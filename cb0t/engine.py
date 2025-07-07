@@ -88,17 +88,14 @@ def trend_is_down(pair: str) -> bool:
 
 
 def bottom_is_reached(pair: str) -> bool:
-    """ Check if the bottom is reached. """
     return get_asset_value(pair) < get_sma(pair, '1w', 160)
 
 
 def top_is_reached(pair: str) -> bool:
-    """ Check if the top is reached. """
     return False
 
 
 def accelerate(pair: str, amount: float) -> float:
-    """ Perform an acceleration action. """
     current_value = get_asset_value(pair)
     # Implement your acceleration logic here
 
