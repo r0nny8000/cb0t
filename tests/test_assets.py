@@ -28,8 +28,6 @@ def test_init():
     assert len(btcusd.df_1d) == 720  # defined my value of kraken
     assert len(btcusd.df_1w) > 610
 
-    print_dataframe("INIT", btcusd)
-
 
 def test_rsi():
     """
@@ -43,8 +41,6 @@ def test_rsi():
     assert 'rsi' in btcusd.df_1d
     assert btcusd.df_1d['rsi'].iloc[-1] < 100
     assert btcusd.df_1d['rsi'].iloc[-1] > 0
-
-    print_dataframe("RSI", btcusd)
 
     assert btcusd.RSI_below(50) in [True, False]
     assert btcusd.RSI_above(50) in [True, False]
@@ -79,14 +75,10 @@ def test_sma():
     assert 'sma_200' in btcusd.df_1d
     assert 'sma_200' in btcusd.df_1w
 
-    print_dataframe("SMA", btcusd)
-
     assert btcusd.below_Weekly_SMA(50) in [True, False]
     assert btcusd.above_Weekly_SMA(50) in [True, False]
 
     price = btcusd.get_asset_price()
     assert price > 0
-    assert btcusd.below_Weekly_SMA(50) == (
-        price < btcusd.df_1w['sma_50'].iloc[-1])
-    assert btcusd.above_Weekly_SMA(50) == (
-        price > btcusd.df_1w['sma_50'].iloc[-1])
+    assert btcusd.below_Weekly_SMA(50) == (price < btcusd.df_1w['sma_50'].iloc[-1])
+    assert btcusd.above_Weekly_SMA(50) == (price > btcusd.df_1w['sma_50'].iloc[-1])
