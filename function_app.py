@@ -20,12 +20,10 @@ import cb0t.engine as engine
 app = func.FunctionApp()
 
 
-user = User(key=os.getenv('KRAKENAPIKEY'),
-            secret=os.getenv('KRAKENAPISECRET'))
-trade = Trade(key=os.getenv('KRAKENAPIKEY'),
-              secret=os.getenv('KRAKENAPISECRET'))
+user = User(key=os.getenv('KRAKENAPIKEY'), secret=os.getenv('KRAKENAPISECRET'))
+trade = Trade(key=os.getenv('KRAKENAPIKEY'), secret=os.getenv('KRAKENAPISECRET'))
 env = os.getenv('CB0TENV', 'DEV')
-env_schedule = {'DEV': '*/10 * * * * *', 'PROD': '0 0 16 * * *'}
+env_schedule = {'DEV': '*/20 * * * * *', 'PROD': '0 0 16 * * *'}
 
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
@@ -91,57 +89,48 @@ def get_env(req: func.HttpRequest) -> func.HttpResponse:
 
 
 @app.timer_trigger(schedule=env_schedule[env], arg_name="timer", run_on_startup=False, use_monitor=False)
-def accumulate_btc(timer: func.TimerRequest) -> None:
+def accumulate_assets(timer: func.TimerRequest) -> None:
     """Accumulates crypto periodically."""
     if timer.past_due:
         logging.info("The timer is past due! Will continue.")
 
-    """
     btceur = BTCEUR()
+    accumulate(btceur, btceur.RSI_below(40) or btceur.below_Weekly_SMA(200), euro=8)
 
-    if btceur.RSI_below(44) or btceur.below_Weekly_SMA(200):
-        logging.info("Accumulating BTC with strategy")
-    else:
-        logging.info("Skipping BTC accumulation, strategy not met.")
-    """
+    paxgeur = PAXGEUR()
+    accumulate(paxgeur, paxgeur.RSI_below(30), euro=8)
+
     # accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
     # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
     # accumulate('SOLEUR', 8, 8)  # Accumulate x Solana in EUR in y days
 
 
-def accumulate(pair: str, euro: float, days: int) -> None:
+def accumulate(asset: Asset, condition: bool, euro: float) -> None:
     """
     Accumulates a specified cryptocurrency by checking the trend and bottom conditions.
     """
+    if not condition:
+        logging.info(f"{asset.pair} Skipping accumulation, conditions not met.")
+        return
+
     try:
 
-        # check investment schedule
-        if not engine.investment_schedule(days):
-            logging.info(
-                '%s Investment schedule of %s days not met, skipping.', pair, days)
-            return
-
-        # check conditions if trend is up or bottom is reached
-        if not (engine.trend_is_up(pair) or engine.bottom_is_reached(pair)):
-            logging.info(
-                '%s Trend and bottom conditions not met, skipping.', pair)
-            return
+        logging.info(f"{asset.pair} Accumulating BTC.")
 
         # optimize the amount to accumulate based on the current price
-        accelerated_euro = engine.accelerate(pair, euro)
-        volume = round(accelerated_euro / engine.get_asset_value(pair), 8)
+        accelerated_euro = engine.accelerate(asset.pair, euro)
+        volume = round(accelerated_euro / engine.get_asset_value(asset.pair), 8)
 
         # check if minimum volume is met
-        asset_pair = Market().get_asset_pairs(pair)
+        asset_pair = Market().get_asset_pairs(asset.pair)
 
-        ordermin = float(asset_pair[pair]['ordermin'])
+        ordermin = float(asset_pair[asset.pair]['ordermin'])
         if volume < ordermin:
-            logging.info('%s Volume %f is below minimum required %f, increasing volume.',
-                         pair, volume, ordermin)
+            logging.info('%s Volume %f is below minimum required %f, increasing volume.', asset.pair, volume, ordermin)
             volume = ordermin
 
         logging.info('%s Accumulating %f with %f EUR',
-                     pair, volume, accelerated_euro)
+                     asset.pair, volume, accelerated_euro)
 
         # check if environment is set to PROD
         if env != 'PROD':
@@ -149,14 +138,14 @@ def accumulate(pair: str, euro: float, days: int) -> None:
 
         # create order
         transaction = trade.create_order(ordertype='market',
-                                         pair=pair,
+                                         pair=asset.pair,
                                          side='buy',
                                          volume=volume)  # pylint: disable=line-too-long
 
-        logging.info('%s Order created: %s', pair, transaction)
+        logging.info('%s Order created: %s', asset.pair, transaction)
 
     except Exception as e:  # pylint: disable=broad-except
-        logging.error('%s %s', pair, str(e).replace('\n', ' '))
+        logging.error('%s %s', asset.pair, str(e).replace('\n', ' '))
 
 
 def calculate_cost_basis(pair: str) -> float:

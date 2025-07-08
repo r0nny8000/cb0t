@@ -77,24 +77,6 @@ def get_asset_value(pair: str) -> float:
         raise EngineException(str(e).replace('\n', ' ')) from e
 
 
-def trend_is_up(pair: str) -> bool:
-    """ Check if the trend is up. """
-    return get_asset_value(pair) > get_sma(pair, '1d', 50)
-
-
-def trend_is_down(pair: str) -> bool:
-    """ Check if the trend is down. """
-    return get_asset_value(pair) < get_sma(pair, '1d', 50)
-
-
-def bottom_is_reached(pair: str) -> bool:
-    return get_asset_value(pair) < get_sma(pair, '1w', 160)
-
-
-def top_is_reached(pair: str) -> bool:
-    return False
-
-
 def accelerate(pair: str, amount: float) -> float:
     current_value = get_asset_value(pair)
     # Implement your acceleration logic here
@@ -108,8 +90,3 @@ def accelerate(pair: str, amount: float) -> float:
     ath = max(float(candle[2]) for candle in ohlc[pair])
 
     return round(ath / current_value * amount, 2)
-
-
-def investment_schedule(days: int) -> bool:
-    """ Check if the investment schedule is met based on the current day. """
-    return time.localtime().tm_mday % days == 0

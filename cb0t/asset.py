@@ -51,8 +51,7 @@ class Asset():
             break
 
         # Check if the data length matches the expected length if the interval is less than a week
-        # for BTC there are no 720 candelsticks available on 2025-06-25
-        # need to be changed in future if more data is available
+        # for BTC and younger assets there are no 720 weekly candlesticks available on 2025-06-25
         if len(data) != length and self.intervals_to_min[interval] < 10080:
             raise AssetException(
                 f"Received {len(data)} data points for {pair} with interval {interval}, expected {length}.")
@@ -128,7 +127,7 @@ class Asset():
             self.calculate_sma(window)
 
         logging.info(
-            f"{self.pair} Price: {self.get_asset_price()} Weekly SMA: {self.df_1w[column_name].iloc[-1]}")
+            f"{self.pair} SMA Weekly: {self.df_1w[column_name].iloc[-1]} Price: {self.get_asset_price()}")
 
         return self.get_asset_price() < self.df_1w[column_name].iloc[-1]
 
