@@ -95,10 +95,10 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
         logging.info("The timer is past due! Will continue.")
 
     btceur = BTCEUR()
-    accumulate(btceur, btceur.RSI_below(40) or btceur.below_Weekly_SMA(200), euro=8)
+    accumulate(btceur, btceur.RSI_below(40) or btceur.below_Weekly_SMA(200), 8)
 
     paxgeur = PAXGEUR()
-    accumulate(paxgeur, paxgeur.RSI_below(30), euro=8)
+    accumulate(paxgeur, paxgeur.RSI_below(30), 8)
 
     # accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
     # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
