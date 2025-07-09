@@ -79,17 +79,13 @@ class Asset():
     def calculate_rsi(self, window: int = 14) -> pd.DataFrame:
         self.df_1d['change'] = self.df_1d['close'].astype(float).diff()
         self.df_1d['gain'] = self.df_1d.change.mask(self.df_1d.change < 0, 0.0)
-        self.df_1d['loss'] = - \
-            self.df_1d.change.mask(self.df_1d.change > 0, -0.0)
+        self.df_1d['loss'] = - self.df_1d.change.mask(self.df_1d.change > 0, -0.0)
 
         # Calculate average gain and loss
-        self.df_1d['avg_gain'] = self.df_1d['gain'].rolling(
-            window=window, min_periods=window).mean()
-        self.df_1d['avg_loss'] = self.df_1d['loss'].rolling(
-            window=window, min_periods=window).mean()
+        self.df_1d['avg_gain'] = self.df_1d['gain'].rolling(window=window, min_periods=window).mean()
+        self.df_1d['avg_loss'] = self.df_1d['loss'].rolling(window=window, min_periods=window).mean()
 
-        self.df_1d['rs'] = self.df_1d.avg_gain / \
-            self.df_1d.avg_loss
+        self.df_1d['rs'] = self.df_1d.avg_gain / self.df_1d.avg_loss
         self.df_1d['rsi'] = 100 - (100 / (1 + self.df_1d.rs))
 
         return self.df_1d
@@ -98,10 +94,8 @@ class Asset():
         """Calculates and returns the Simple Moving Average (SMA) of the data."""
         column_name = 'sma_' + str(window)
 
-        self.df_1d[column_name] = self.df_1d['close'].astype(float).rolling(
-            window=window, min_periods=window).mean()
-        self.df_1w[column_name] = self.df_1w['close'].astype(float).rolling(
-            window=window, min_periods=window).mean()
+        self.df_1d[column_name] = self.df_1d['close'].astype(float).rolling(window=window, min_periods=window).mean()
+        self.df_1w[column_name] = self.df_1w['close'].astype(float).rolling(window=window, min_periods=window).mean()
 
         return self.df_1d
 
@@ -111,13 +105,10 @@ class Asset():
         if 'rsi' not in self.df_1d.columns:
             self.calculate_rsi()
 
-        logging.info(
-            f"{self.pair} RSI: {self.df_1d['rsi'].iloc[-1]} Threshold: {threshold}")
+        logging.info(f"{self.pair} below RSI: {self.df_1d['rsi'].iloc[-1]} Threshold: {threshold}")
 
         return self.df_1d['rsi'].iloc[-1] < threshold
 
-    def RSI_above(self, threshold: int = 50) -> bool:
-        return not self.RSI_below(threshold)
 
     def below_Weekly_SMA(self, window: int) -> bool:
         """Calculates and returns the SMA of the data."""
@@ -126,11 +117,7 @@ class Asset():
         if column_name not in self.df_1w.columns:
             self.calculate_sma(window)
 
-        logging.info(
-            f"{self.pair} SMA Weekly: {self.df_1w[column_name].iloc[-1]} Price: {self.get_asset_price()}")
+        logging.info(f"{self.pair} below SMA Weekly: {self.df_1w[column_name].iloc[-1]} Price: {self.get_asset_price()}")
 
         return self.get_asset_price() < self.df_1w[column_name].iloc[-1]
 
-    def above_Weekly_SMA(self, window: int) -> bool:
-        """Calculates and returns the SMA of the data."""
-        return not self.below_Weekly_SMA(window)
