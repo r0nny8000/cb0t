@@ -148,11 +148,3 @@ def accumulate(asset: Asset, condition: bool, euro: float) -> None:
         logging.error('%s %s', asset.pair, str(e).replace('\n', ' '))
 
 
-def calculate_cost_basis(pair: str) -> float:
-    """
-    - Check which amount is available in account
-    - get a list of tha las trated
-    - split the amount betweeen the last trades
-    - sum upf the costs of this trades and to the amount: this is the cost basis
-
-    """
