@@ -95,7 +95,13 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
         logging.info("The timer is past due! Will continue.")
 
     btceur = BTCEUR()
-    accumulate(btceur, btceur.RSI_below(40) or btceur.below_Weekly_SMA(200), 8)
+    accumulate(btceur, btceur.RSI_below(45) or btceur.below_Weekly_SMA(200), 8)
+
+    etheur = ETHEUR()
+    accumulate(etheur, etheur.RSI_below(40), 8)
+
+    soletur = SOLEUR()
+    accumulate(soletur, soletur.RSI_below(35), 8)
 
     paxgeur = PAXGEUR()
     accumulate(paxgeur, paxgeur.RSI_below(30), 8)
