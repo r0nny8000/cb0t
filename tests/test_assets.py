@@ -44,6 +44,7 @@ def test_rsi():
 
     assert btcusd.RSI_below(50) in [True, False]
     assert btcusd.RSI_above(50) in [True, False]
+    assert btcusd.RSI_below(50) != btcusd.RSI_above(50)
 
     rsi = btcusd.df_1d['rsi'].iloc[-1]
     assert rsi > 0 and rsi < 100
@@ -77,6 +78,7 @@ def test_sma():
 
     assert btcusd.below_Weekly_SMA(50) in [True, False]
     assert btcusd.above_Weekly_SMA(50) in [True, False]
+    assert btcusd.below_Weekly_SMA(50) != btcusd.above_Weekly_SMA(50)
 
     price = btcusd.get_asset_price()
     assert price > 0

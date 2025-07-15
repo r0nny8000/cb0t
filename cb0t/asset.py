@@ -105,10 +105,18 @@ class Asset():
         if 'rsi' not in self.df_1d.columns:
             self.calculate_rsi()
 
-        logging.info(f"{self.pair} below RSI: {self.df_1d['rsi'].iloc[-1]} Threshold: {threshold}")
+        rsi = self.df_1d['rsi'].iloc[-1]
 
-        return self.df_1d['rsi'].iloc[-1] < threshold
+        if rsi < threshold:
+            logging.info(f"{self.pair} RSI {rsi} is below the threshold {threshold}")
+            return True
 
+        else:
+            logging.info(f"{self.pair} RSI {rsi} is above the threshold {threshold}")
+            return False
+
+    def RSI_above(self, threshold: int = 50) -> bool:
+        return not self.RSI_below(threshold)
 
     def below_Weekly_SMA(self, window: int) -> bool:
         """Calculates and returns the SMA of the data."""
@@ -117,7 +125,15 @@ class Asset():
         if column_name not in self.df_1w.columns:
             self.calculate_sma(window)
 
-        logging.info(f"{self.pair} below SMA Weekly: {self.df_1w[column_name].iloc[-1]} Price: {self.get_asset_price()}")
+        sma = self.df_1w[column_name].iloc[-1]
 
-        return self.get_asset_price() < self.df_1w[column_name].iloc[-1]
+        if self.get_asset_price() < sma:
+            logging.info(f"{self.pair} Price {self.get_asset_price()} is below Weekly SMA {sma}")
+            return True
+        else:
+            logging.info(f"{self.pair} Price {self.get_asset_price()} is above Weekly SMA {sma}")
+            return False
 
+    def above_Weekly_SMA(self, window: int) -> bool:
+        """Checks if the current price is above the Weekly SMA."""
+        return not self.below_Weekly_SMA(window)
