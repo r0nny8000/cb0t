@@ -98,7 +98,7 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     accumulate(btceur, btceur.RSI_below(45) or btceur.below_Weekly_SMA(200), 8)
 
     etheur = ETHEUR()
-    accumulate(etheur, etheur.RSI_below(40), 8)
+    accumulate(etheur, etheur.RSI_below(40) or etheur.below_Weekly_SMA(250), 8)
 
     soletur = SOLEUR()
     accumulate(soletur, soletur.RSI_below(35), 8)
