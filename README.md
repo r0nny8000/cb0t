@@ -3,6 +3,13 @@ CB0T
 
 As small and simple bot to buy cryptoocurrency on Kraken using the Kraken API.
 
+NEXT
+----
+
+- show cost base and avarage price of portfolio assets
+- show current value of portfolio assets in EUR
+- build dca function accumulating assets in bullmarket??? Uptrend identification?
+
 Log
 ---
 
