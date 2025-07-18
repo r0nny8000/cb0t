@@ -100,15 +100,12 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     etheur = ETHEUR()
     accumulate(etheur, etheur.RSI_below(40) or etheur.below_Weekly_SMA(250), 8)
 
-    soletur = SOLEUR()
-    accumulate(soletur, soletur.RSI_below(35), 8)
+    soleur = SOLEUR()
+    accumulate(soleur, soleur.RSI_below(35), 8)
 
     paxgeur = PAXGEUR()
     accumulate(paxgeur, paxgeur.RSI_below(30), 8)
 
-    # accumulate('XXBTZEUR', 8, 4)  # Accumulate x Bitcoin in EUR in y days
-    # accumulate('XETHZEUR', 8, 8)  # Accumulate x Ethereum in EUR in y days
-    # accumulate('SOLEUR', 8, 8)  # Accumulate x Solana in EUR in y days
 
 
 def accumulate(asset: Asset, condition: bool, euro: float) -> None:
