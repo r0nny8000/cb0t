@@ -8,7 +8,9 @@ NEXT
 
 - show cost base and avarage price of portfolio assets
 - show current value of portfolio assets in EUR
+- move engine functions to assets.py
 - build dca function accumulating assets in bullmarket??? Uptrend identification?
+- move simulation to the UI
 
 Log
 ---
