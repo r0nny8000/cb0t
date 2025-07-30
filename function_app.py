@@ -15,8 +15,6 @@ from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildca
 from cb0t.asset_pairs import *
 from cb0t.asset import Asset
 
-import cb0t.engine as engine
-
 app = func.FunctionApp()
 
 
@@ -121,8 +119,8 @@ def accumulate(asset: Asset, condition: bool, euro: float) -> None:
         logging.info(f"{asset.pair} Accumulating BTC.")
 
         # optimize the amount to accumulate based on the current price
-        accelerated_euro = engine.accelerate(asset.pair, euro)
-        volume = round(accelerated_euro / engine.get_asset_value(asset.pair), 8)
+        accelerated_euro = asset.accelerate(asset.pair, euro)
+        volume = round(accelerated_euro / asset.get_asset_price(), 8)
 
         # check if minimum volume is met
         asset_pair = Market().get_asset_pairs(asset.pair)

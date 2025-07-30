@@ -2,6 +2,7 @@
 from cb0t.asset_pairs import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from cb0t.asset import Asset
 
+btcusd = BTCUSD()
 
 def print_dataframe(test_name, asset):
     """
@@ -19,8 +20,6 @@ def test_init():
     """
     Unit tests for the BTCUSD class in the cb0t.btcusd module.
     """
-    btcusd = BTCUSD()
-
     assert btcusd.pair == "XXBTZUSD"
 
     assert btcusd.df_1d is not None
@@ -33,7 +32,6 @@ def test_rsi():
     """
     Test the RSI method of the BTCUSD class.
     """
-    btcusd = BTCUSD()
     assert 'time' in btcusd.df_1d
     assert 'close' in btcusd.df_1d
     assert 'rsi' not in btcusd.df_1d
@@ -58,7 +56,6 @@ def test_sma():
     """
 
     # daily data frame
-    btcusd = BTCUSD()
     assert 'time' in btcusd.df_1d
     assert 'close' in btcusd.df_1d
     assert 'time' in btcusd.df_1w
@@ -84,3 +81,30 @@ def test_sma():
     assert price > 0
     assert btcusd.below_Weekly_SMA(50) == (price < btcusd.df_1w['sma_50'].iloc[-1])
     assert btcusd.above_Weekly_SMA(50) == (price > btcusd.df_1w['sma_50'].iloc[-1])
+
+
+
+def test_get_asset_price():
+    """
+    Test the get_asset_price method of the BTCUSD class.
+    """
+    price = btcusd.get_asset_price()
+    assert price > 0
+    print(f"Current BTC/USD asset price: {price}")
+
+def test_ath():
+    """
+    Test the ATH method of the BTCUSD class.
+    """
+    ath = btcusd.ath
+    assert ath > 123000  # ATH is above $123,000
+    print(f"Current ATH for {btcusd.pair}: {ath}")
+
+def test_accelerate():
+    """
+    Test the accelerate method of the BTCUSD class.
+    """
+    amount = 1000.0  # Amount in EUR
+    accelerated_amount = btcusd.accelerate(amount)
+    assert accelerated_amount >= 1000
+    print(f"Accelerated amount for {btcusd.pair}: {accelerated_amount}")

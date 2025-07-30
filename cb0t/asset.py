@@ -16,6 +16,7 @@ class Asset():
     pair = None
     df_1d = None
     df_1w = None
+    ath = None
 
     intervals_to_min = {'1m': 1, '5m': 5, '15m': 15, '30m': 30,
                         '1h': 60, '4h': 240, '1d': 1440, '1w': 10080, '2w': 21600}
@@ -24,6 +25,7 @@ class Asset():
         self.pair = pair
         self.df_1d = self.get_ohlc(pair, '1d', 720)
         self.df_1w = self.get_ohlc(pair, '1w', 720)
+        self.ath = self.df_1w['high'].astype(float).max()
 
         logging.info(
             f"{self.pair} initialized with {len(self.df_1d)} daily and  {len(self.df_1w)} weekly data points.")
@@ -137,3 +139,9 @@ class Asset():
     def above_Weekly_SMA(self, window: int) -> bool:
         """Checks if the current price is above the Weekly SMA."""
         return not self.below_Weekly_SMA(window)
+
+
+
+    def accelerate(self, amount: float) -> float:
+        """Accelerates the amount based on the ATH (All Time High) of the asset."""
+        return round(self.ath / self.get_asset_price() * amount, 2)

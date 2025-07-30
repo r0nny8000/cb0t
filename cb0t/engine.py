@@ -64,29 +64,3 @@ def get_sma(pair: str, interval: str, length: int) -> float:
 
     return sma
 
-
-def get_asset_value(pair: str) -> float:
-    """ Fetches the current value for a given currency pair. """
-    try:
-        ticker = Market().get_ticker(pair)
-
-        for v in ticker.values():
-            return float(v['c'][0])
-
-    except (KrakenUnknownAssetError, KrakenUnknownAssetPairError) as e:
-        raise EngineException(str(e).replace('\n', ' ')) from e
-
-
-def accelerate(pair: str, amount: float) -> float:
-    current_value = get_asset_value(pair)
-    # Implement your acceleration logic here
-
-    try:
-        ohlc = Market().get_ohlc(pair, intervals_min['1w'])
-
-    except (KrakenUnknownAssetError, KrakenUnknownAssetPairError, KrakenInvalidArgumentsError) as e:
-        raise EngineException(str(e).replace('\n', ' ')) from e
-
-    ath = max(float(candle[2]) for candle in ohlc[pair])
-
-    return round(ath / current_value * amount, 2)
