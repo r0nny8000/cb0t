@@ -5,9 +5,6 @@ As small and simple bot to buy cryptoocurrency on Kraken using the Kraken API.
 
 NEXT
 ----
-- move engine functions to assets.py
-    - move ath to self and init via exisitng df_1w
-    - implement more tests
 - show cost base and avarage price of portfolio assets
 - show current accumulation parameter compared to current values
 - show current value of portfolio assets in EUR
