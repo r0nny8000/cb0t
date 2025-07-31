@@ -5,7 +5,9 @@
 
 <ul>
     {% for key, value in balance.items() %}
+    {% if value|float %}
     <li>{{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR') }}: {{ value|float|round(8) }}</li>
+    {% endif %}
     {% endfor %}
 </ul>
 

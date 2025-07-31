@@ -56,7 +56,7 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
         pair = 'XXBTZEUR,XETHZEUR,SOLEUR,PAXGEUR'
 
     # If 'pair' is provided, fetch the ticker information.
-    logging.info("Ticker function is processing with pair: %s", pair)
+    logging.debug("Ticker function is processing with pair: %s", pair)
 
     try:
 
@@ -64,7 +64,7 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
         assets = Market().get_asset_pairs(pair)
         asset_pair = Market().get_asset_pairs(pair)
 
-        logging.info('Ticker data: %s', ticker)
+        logging.debug('Ticker data: %s', ticker)
 
     except (KrakenUnknownAssetError, KrakenUnknownAssetPairError) as e:
         logging.error(str(e))
