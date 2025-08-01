@@ -23,12 +23,28 @@ class Asset():
 
     def __init__(self, pair: str):
         self.pair = pair
-        self.df_1d = self.get_ohlc(pair, '1d', 720)
-        self.df_1w = self.get_ohlc(pair, '1w', 720)
-        self.ath = self.df_1w['high'].astype(float).max()
 
-        logging.info(
-            f"{self.pair} initialized with {len(self.df_1d)} daily and  {len(self.df_1w)} weekly data points.")
+
+    def get_df_1d(self) -> pd.DataFrame:
+        """Returns the 1-day DataFrame."""
+        if self.df_1d is None:
+            self.df_1d = self.get_ohlc(self.pair, '1d', 720)
+
+        return self.df_1d
+
+    def get_df_1w(self) -> pd.DataFrame:
+        """Returns the 1-week DataFrame."""
+        if self.df_1w is None:
+            self.df_1w = self.get_ohlc(self.pair, '1w', 720)
+
+        return self.df_1w
+
+    def get_ath(self) -> float:
+        """Returns the All Time High (ATH) of the asset."""
+        if self.ath is None:
+            self.ath = self.get_df_1w()['high'].astype(float).max()
+
+        return self.ath
 
     def get_ohlc(self, pair: str, interval: str, length: int = 720):
         """Fetches OHLC (Open, High, Low, Close) data for a given currency pair
@@ -79,35 +95,35 @@ class Asset():
             raise AssetException(str(e).replace('\n', ' ')) from e
 
     def calculate_rsi(self, window: int = 14) -> pd.DataFrame:
-        self.df_1d['change'] = self.df_1d['close'].astype(float).diff()
-        self.df_1d['gain'] = self.df_1d.change.mask(self.df_1d.change < 0, 0.0)
-        self.df_1d['loss'] = - self.df_1d.change.mask(self.df_1d.change > 0, -0.0)
+        self.get_df_1d()['change'] = self.get_df_1d()['close'].astype(float).diff()
+        self.get_df_1d()['gain'] = self.get_df_1d().change.mask(self.get_df_1d().change < 0, 0.0)
+        self.get_df_1d()['loss'] = - self.get_df_1d().change.mask(self.get_df_1d().change > 0, -0.0)
 
         # Calculate average gain and loss
-        self.df_1d['avg_gain'] = self.df_1d['gain'].rolling(window=window, min_periods=window).mean()
-        self.df_1d['avg_loss'] = self.df_1d['loss'].rolling(window=window, min_periods=window).mean()
+        self.get_df_1d()['avg_gain'] = self.get_df_1d()['gain'].rolling(window=window, min_periods=window).mean()
+        self.get_df_1d()['avg_loss'] = self.get_df_1d()['loss'].rolling(window=window, min_periods=window).mean()
 
-        self.df_1d['rs'] = self.df_1d.avg_gain / self.df_1d.avg_loss
-        self.df_1d['rsi'] = 100 - (100 / (1 + self.df_1d.rs))
+        self.get_df_1d()['rs'] = self.get_df_1d().avg_gain / self.get_df_1d().avg_loss
+        self.get_df_1d()['rsi'] = 100 - (100 / (1 + self.get_df_1d().rs))
 
-        return self.df_1d
+        return self.get_df_1d()
 
     def calculate_sma(self, window: int = 50) -> pd.DataFrame:
         """Calculates and returns the Simple Moving Average (SMA) of the data."""
         column_name = 'sma_' + str(window)
 
-        self.df_1d[column_name] = self.df_1d['close'].astype(float).rolling(window=window, min_periods=window).mean()
-        self.df_1w[column_name] = self.df_1w['close'].astype(float).rolling(window=window, min_periods=window).mean()
+        self.get_df_1d()[column_name] = self.get_df_1d()['close'].astype(float).rolling(window=window, min_periods=window).mean()
+        self.get_df_1w()[column_name] = self.get_df_1w()['close'].astype(float).rolling(window=window, min_periods=window).mean()
 
-        return self.df_1d
+        return self.get_df_1d()
 
     def RSI_below(self, threshold: int = 50) -> bool:
         """Returns True if RSI is below the given value."""
 
-        if 'rsi' not in self.df_1d.columns:
+        if 'rsi' not in self.get_df_1d().columns:
             self.calculate_rsi()
 
-        rsi = self.df_1d['rsi'].iloc[-1]
+        rsi = self.get_df_1d()['rsi'].iloc[-1]
 
         if rsi < threshold:
             logging.info(f"{self.pair} RSI {rsi} is below the threshold {threshold}")
@@ -124,10 +140,10 @@ class Asset():
         """Calculates and returns the SMA of the data."""
         column_name = 'sma_' + str(window)
 
-        if column_name not in self.df_1w.columns:
+        if column_name not in self.get_df_1w().columns:
             self.calculate_sma(window)
 
-        sma = self.df_1w[column_name].iloc[-1]
+        sma = self.get_df_1w()[column_name].iloc[-1]
 
         if self.get_asset_price() < sma:
             logging.info(f"{self.pair} Price {self.get_asset_price()} is below Weekly SMA {sma}")
@@ -144,4 +160,4 @@ class Asset():
 
     def accelerate(self, amount: float) -> float:
         """Accelerates the amount based on the ATH (All Time High) of the asset."""
-        return round(self.ath / self.get_asset_price() * amount, 2)
+        return round(self.get_ath() / self.get_asset_price() * amount, 2)

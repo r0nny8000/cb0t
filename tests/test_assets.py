@@ -22,8 +22,16 @@ def test_init():
     """
     assert btcusd.pair == "XXBTZUSD"
 
+    # force class to calculate the dataframes
+    assert btcusd.get_df_1d() is not None
+    assert btcusd.get_df_1w() is not None
+
     assert btcusd.df_1d is not None
     assert btcusd.df_1w is not None
+
+    # check if the dataframes are not empty
+    assert len(btcusd.df_1d) > 0
+    assert len(btcusd.df_1w) > 0
     assert len(btcusd.df_1d) == 720  # defined my value of kraken
     assert len(btcusd.df_1w) > 610
 
@@ -32,13 +40,17 @@ def test_rsi():
     """
     Test the RSI method of the BTCUSD class.
     """
-    assert 'time' in btcusd.df_1d
-    assert 'close' in btcusd.df_1d
-    assert 'rsi' not in btcusd.df_1d
+    # force class to calculate the dataframes
+    assert btcusd.get_df_1d() is not None
+    assert btcusd.get_df_1w() is not None
+
+    assert 'time' in btcusd.get_df_1d()
+    assert 'close' in btcusd.get_df_1d()
+    assert 'rsi' not in btcusd.get_df_1d()
     assert btcusd.calculate_rsi() is not None
-    assert 'rsi' in btcusd.df_1d
-    assert btcusd.df_1d['rsi'].iloc[-1] < 100
-    assert btcusd.df_1d['rsi'].iloc[-1] > 0
+    assert 'rsi' in btcusd.get_df_1d()
+    assert btcusd.get_df_1d()['rsi'].iloc[-1] < 100
+    assert btcusd.get_df_1d()['rsi'].iloc[-1] > 0
 
     assert btcusd.RSI_below(50) in [True, False]
     assert btcusd.RSI_above(50) in [True, False]
@@ -54,24 +66,28 @@ def test_sma():
     """
     Test the SMA method of the BTCUSD class.
     """
+    # force class to calculate the dataframes
+    assert btcusd.get_df_1d() is not None
+    assert btcusd.get_df_1w() is not None
+
 
     # daily data frame
-    assert 'time' in btcusd.df_1d
-    assert 'close' in btcusd.df_1d
-    assert 'time' in btcusd.df_1w
-    assert 'close' in btcusd.df_1w
+    assert 'time' in btcusd.get_df_1d()
+    assert 'close' in btcusd.get_df_1d()
+    assert 'time' in btcusd.get_df_1w()
+    assert 'close' in btcusd.get_df_1w()
 
-    assert 'sma_50' not in btcusd.df_1d
-    assert 'sma_50' not in btcusd.df_1w
+    assert 'sma_50' not in btcusd.get_df_1d()
+    assert 'sma_50' not in btcusd.get_df_1w()
     assert btcusd.calculate_sma(50) is not None
-    assert 'sma_50' in btcusd.df_1d
-    assert 'sma_50' in btcusd.df_1w
+    assert 'sma_50' in btcusd.get_df_1d()
+    assert 'sma_50' in btcusd.get_df_1w()
 
-    assert 'sma_200' not in btcusd.df_1d
-    assert 'sma_200' not in btcusd.df_1w
+    assert 'sma_200' not in btcusd.get_df_1d()
+    assert 'sma_200' not in btcusd.get_df_1w()
     assert btcusd.calculate_sma(200) is not None
-    assert 'sma_200' in btcusd.df_1d
-    assert 'sma_200' in btcusd.df_1w
+    assert 'sma_200' in btcusd.get_df_1d()
+    assert 'sma_200' in btcusd.get_df_1w()
 
     assert btcusd.below_Weekly_SMA(50) in [True, False]
     assert btcusd.above_Weekly_SMA(50) in [True, False]
@@ -96,7 +112,7 @@ def test_ath():
     """
     Test the ATH method of the BTCUSD class.
     """
-    ath = btcusd.ath
+    ath = btcusd.get_ath()
     assert ath > 123000  # ATH is above $123,000
     print(f"Current ATH for {btcusd.pair}: {ath}")
 
