@@ -76,7 +76,50 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="balance", auth_level="anonymous", methods=["GET"])
 def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the account balance from Kraken."""
-    balance = user.get_account_balance()
+    account_balance = user.get_account_balance()
+
+    balance = {}
+
+    asset_map = {
+        'XXBT': BTCEUR(),
+        'XETH': ETHEUR(),
+        'SOL': SOLEUR(),
+        'PAXG': PAXGEUR(),
+    }
+
+    for asset, amount_str in account_balance.items():
+
+        amount = float(amount_str)
+
+        if amount == 0:
+            continue
+
+        if asset == 'ZEUR':
+            balance[asset] = { 'amount': amount, 'price': amount }
+            continue
+
+        asset_pair = asset_map[asset]
+
+        if asset_pair is None:
+            logging.warning(f"No asset pair found for {asset}, skipping.")
+            continue
+
+
+        print(f"Asset: {asset}, Amount: {amount}, Price: {asset_pair.get_asset_price()}")
+        # ticker = Market().get_ticker(asset + 'EUR') if asset != 'EUR' else 1.0
+
+        balance[asset] = {
+            'amount': amount,
+            'price': amount * asset_pair.get_asset_price(),
+            'cost_basis': "?",
+            'average_price': "?",
+            'unrealized_pnl': "?"
+        }
+
+
+
+    print(f"Balance: {balance}")
+
     return html(template="balance.html.j2", balance=balance)
 
 

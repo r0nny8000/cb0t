@@ -1,14 +1,40 @@
-{% extends "base.html.j2" %}
-{% set active_page = "balance" %}
-
-{% block content %}
+{% extends "base.html.j2" %} {% set active_page = "balance" %} {% block content %}
 
 <ul>
-    {% for key, value in balance.items() %}
-    {% if value|float %}
-    <li>{{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR') }}: {{ value|float|round(8) }}</li>
-    {% endif %}
-    {% endfor %}
+    {% for key, value in balance.items() %} {% if value|float %}
+    <li>
+        {{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR')}}: {{ value|float|round(8) }}
+    </li>
+    {% endif %} {% endfor %}
 </ul>
+
+<div class="table-responsive">
+    <table class="table table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Asset</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Price €</th>
+                <th scope="col">Cost Basis €</th>
+                <th scope="col">Average Price €</th>
+                <th scope="col">Unrealized PnL %</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for key, value in balance.items() %}
+            <tr>
+                <td>{{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR')}}</td>
+                <td>{{ value['amount']|float|round(8) }}</td>
+                <td>{{ value['price']|float|round(2) }}</td>
+                <td>{{ value['cost_basis'] }}</td>
+                <td>{{ value['average_price'] }}</td>
+                <td>{{ value['unrealized_pnl'] }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
