@@ -6,6 +6,7 @@ It demonstrates how to handle HTTP requests and execute periodic tasks using Azu
 # Provides logging capabilities to track events and debug the application.
 import logging
 import os
+import json
 
 import azure.functions as func  # Azure Functions Python library.
 from jinja2 import Environment, FileSystemLoader
@@ -26,6 +27,13 @@ env_schedule = {'DEV': '*/20 * * * * *', 'PROD': '0 0 16 * * *'}
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
 jinja_env = Environment(loader=FileSystemLoader(template_dir))
+
+
+def print_json(obj: dict) -> None:
+    """
+    Prints a JSON object in a pretty format for debugging purposes.
+    """
+    print(json.dumps(obj, indent=4, default=str))
 
 
 def html(template: str, *args, **kwargs) -> func.HttpResponse:
@@ -72,6 +80,63 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
 
     return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets, asset_pair=asset_pair)
 
+def calculate_cost_basis(asset: Asset, amount: float) -> float:
+    """Calculates the cost basis for a given asset and amount."""
+
+    try:
+
+        # Fetch the asset's historical trades to calculate the cost basis.
+        all_trades = {}
+        offset = 0
+
+        while True:
+
+            trades = user.get_trades_history(ofs=offset)
+
+            if not trades or 'trades' not in trades:
+                break
+
+            all_trades.update(trades['trades'])
+
+            if len(trades['trades']) < 50:
+                break
+
+            offset += 50
+
+    except KrakenUnknownAssetError as e:
+        logging.error(str(e))
+        return None
+
+    # Filter trades for the specific asset pair.
+    filtered_trades = {k: v for k, v in all_trades.items() if v['pair'] == asset.pair}
+
+
+    amount_counter = amount
+    cost_basis = 0.0
+
+    # Iterate through the trades to calculate the cost basis.
+    for trade_id, trade in all_trades.items():
+        if trade['pair'] == asset.pair:
+            if trade['type'] == 'buy':
+                amount_counter -= float(trade['vol'])
+                amount_counter = round(amount_counter, 8)
+                cost_basis += float(trade['cost'])
+                cost_basis += float(trade['fee'])
+                #print (f"{asset.pair} {trade['vol']} at cost {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
+                if amount_counter <= 0:
+                    break
+            elif trade['type'] == 'sell':
+                amount_counter += float(trade['vol'])
+                amount_counter = round(amount_counter, 8)
+                cost_basis -= float(trade['cost'])
+                cost_basis += float(trade['fee']) # every sell is increasing my cost basis too, as long as I hold the asset
+                #print_json(trade)
+                #print (f"{asset.pair} {trade['vol']} at win {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
+
+
+    return cost_basis
+
+
 
 @app.route(route="balance", auth_level="anonymous", methods=["GET"])
 def get_balance(req: func.HttpRequest) -> func.HttpResponse:
@@ -79,7 +144,7 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     account_balance = user.get_account_balance()
 
 
-    asset_map = {
+    asset_to_EUR_map = {
         'XXBT': BTCEUR(),
         'XETH': ETHEUR(),
         'SOL': SOLEUR(),
@@ -96,30 +161,26 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
             continue
 
         if asset == 'ZEUR':
-            balance[asset] = { 'amount': amount, 'price': amount }
+            balance[asset] = { 'amount': amount, 'price': amount, 'cost_basis': 0, 'average_price': 0, 'unrealized_pnl': 0, 'unrealized_pnl_pct': 0 }
             continue
 
-        asset_pair = asset_map[asset]
+        asset_pair = asset_to_EUR_map[asset]
 
         if asset_pair is None:
             logging.warning(f"No asset pair found for {asset}, skipping.")
             continue
 
-
-        print(f"Asset: {asset}, Amount: {amount}, Price: {asset_pair.get_asset_price()}")
-        # ticker = Market().get_ticker(asset + 'EUR') if asset != 'EUR' else 1.0
+        cost_basis = calculate_cost_basis(asset_pair, amount)
 
         balance[asset] = {
             'amount': amount,
             'price': amount * asset_pair.get_asset_price(),
-            'cost_basis': "?",
-            'average_price': "?",
-            'unrealized_pnl': "?"
+            'cost_basis': cost_basis,
+            'average_price': cost_basis / amount if amount > 0 else 0,
+            'unrealized_pnl': asset_pair.get_asset_price() * amount - cost_basis,
+            'unrealized_pnl_pct': ((asset_pair.get_asset_price() * amount - cost_basis) / cost_basis * 100) if cost_basis > 0 else 0
         }
 
-
-
-    print(f"Balance: {balance}")
 
     return html(template="balance.html.j2", balance=balance)
 
