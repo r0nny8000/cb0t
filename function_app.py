@@ -119,7 +119,7 @@ def accumulate(asset: Asset, condition: bool, euro: float) -> None:
         logging.info(f"{asset.pair} Accumulating BTC.")
 
         # optimize the amount to accumulate based on the current price
-        accelerated_euro = asset.accelerate(asset.pair, euro)
+        accelerated_euro = asset.accelerate(euro)
         volume = round(accelerated_euro / asset.get_asset_price(), 8)
 
         # check if minimum volume is met
