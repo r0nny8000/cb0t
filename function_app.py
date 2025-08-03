@@ -78,7 +78,6 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the account balance from Kraken."""
     account_balance = user.get_account_balance()
 
-    balance = {}
 
     asset_map = {
         'XXBT': BTCEUR(),
@@ -86,6 +85,8 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
         'SOL': SOLEUR(),
         'PAXG': PAXGEUR(),
     }
+
+    balance = {}
 
     for asset, amount_str in account_balance.items():
 
