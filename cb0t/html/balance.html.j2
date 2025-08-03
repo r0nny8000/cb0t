@@ -14,10 +14,10 @@
             <tr>
                 <th scope="col">Asset</th>
                 <th scope="col" style="text-align: right;">Balance</th>
-                <th scope="col" style="text-align: right;">Price €</th>
-                <th scope="col" style="text-align: right;">Cost Basis €</th>
-                <th scope="col" style="text-align: right;">Average Price €</th>
-                <th scope="col" style="text-align: right;">Unrealized PnL €</th>
+                <th scope="col" style="text-align: right;">Price</th>
+                <th scope="col" style="text-align: right;">Cost Basis</th>
+                <th scope="col" style="text-align: right;">Average Price</th>
+                <th scope="col" style="text-align: right;">Unrealized PnL</th>
                 <th scope="col" style="text-align: right;">Unrealized PnL %</th>
             </tr>
         </thead>
@@ -27,11 +27,11 @@
             <tr>
                 <td>{{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR')}}</td>
                 <td style="text-align: right;">{{ value['amount']|float|round(8) }}</td>
-                <td style="text-align: right;">{% if value['amount'] != value['price'] %} {{ value['price']|float|round(2) }} {% endif %}</td>
-                <td style="text-align: right;">{% if value['cost_basis'] %} {{ value['cost_basis']|float|round(2) }} {% endif %}</td>
-                <td style="text-align: right;">{% if value['average_price'] %} {{ value['average_price']|float|round(2) }} {% endif %}</td>
-                <td style="text-align: right;">{% if value['unrealized_pnl'] %} {{ value['unrealized_pnl']|float|round(2) }} {% endif %}</td>
-                <td style="text-align: right;">{% if value['unrealized_pnl_pct'] %} {{ value['unrealized_pnl_pct']|float|round(2) }} {% endif %}</td>
+                <td style="text-align: right;">{% if value['price'] %} {{ value['price']|float|round(2) }} €{% endif %}</td>
+                <td style="text-align: right;">{% if value['cost_basis'] %} {{ value['cost_basis']|float|round(2) }} €{% endif %}</td>
+                <td style="text-align: right;">{% if value['average_price'] %} {{ value['average_price']|float|round(2) }} €{% endif %}</td>
+                <td style="text-align: right;">{% if value['unrealized_pnl'] %} {{ value['unrealized_pnl']|float|round(2) }} €{% endif %}</td>
+                <td style="text-align: right;">{% if value['unrealized_pnl_pct'] %} {{ value['unrealized_pnl_pct']|float|round(1) }} %{% endif %}</td>
             </tr>
             {% endfor %}
 

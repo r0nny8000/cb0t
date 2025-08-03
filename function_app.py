@@ -129,11 +129,12 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
                 amount_counter += float(trade['vol'])
                 amount_counter = round(amount_counter, 8)
                 cost_basis -= float(trade['cost'])
-                cost_basis += float(trade['fee']) # every sell is increasing my cost basis too, as long as I hold the asset
+                #cost_basis += float(trade['fee'])
                 #print_json(trade)
                 #print (f"{asset.pair} {trade['vol']} at win {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
 
-
+    cost_basis = cost_basis * 1.004 # adding kraken fee of 0.4% if selling the position in future
+    cost_basis = round(cost_basis, 2)
     return cost_basis
 
 
@@ -161,7 +162,7 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
             continue
 
         if asset == 'ZEUR':
-            balance[asset] = { 'amount': amount, 'price': amount, 'cost_basis': 0, 'average_price': 0, 'unrealized_pnl': 0, 'unrealized_pnl_pct': 0 }
+            balance[asset] = { 'amount': round(amount, 2), 'price': 0, 'cost_basis': 0, 'average_price': 0, 'unrealized_pnl': 0, 'unrealized_pnl_pct': 0 }
             continue
 
         asset_pair = asset_to_EUR_map[asset]
