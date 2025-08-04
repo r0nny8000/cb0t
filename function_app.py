@@ -204,11 +204,14 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     etheur = ETHEUR()
     accumulate(etheur, etheur.RSI_below(40) or etheur.below_Weekly_SMA(250), 8)
 
+    # very high risk volatile asset wiht large distace to ATH
     soleur = SOLEUR()
-    accumulate(soleur, soleur.RSI_below(35), 8)
+    accumulate(soleur, soleur.RSI_below(35), 4)
 
     paxgeur = PAXGEUR()
     accumulate(paxgeur, paxgeur.RSI_below(30), 8)
+
+
 
 
 
