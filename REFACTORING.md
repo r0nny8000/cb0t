@@ -76,6 +76,15 @@ cb0t/
 - All 8 existing tests pass
 - Code follows PEP 8 and project style guidelines
 
+### 7. Folder Rename (Updated)
+- Renamed `cb0t/` folder to `assets/` for better semantic naming
+- Updated all imports throughout the project:
+  - `from cb0t.asset import Asset` → `from assets.asset import Asset`
+  - `from cb0t.asset_pairs import ...` → `from assets.asset_pairs import ...`
+  - `import cb0t.engine` → `import assets.engine`
+- Updated references in notebooks and test files
+- All tests continue to pass after the rename
+
 ## Next Steps
 1. Consider adding integration tests for the new modular structure
 2. Add type hints to service functions

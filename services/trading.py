@@ -2,7 +2,7 @@
 import os
 import logging
 from kraken.spot import Market
-from cb0t.asset import Asset
+from assets.asset import Asset
 from utils.kraken_client import trade
 
 
@@ -20,7 +20,7 @@ def accumulate(asset: Asset, condition: bool, euro: float) -> None:
 
         asset_pair = Market().get_asset_pairs(asset.pair)
         ordermin = float(asset_pair[asset.pair]["ordermin"])
-        
+
         if volume < ordermin:
             logging.info(
                 f"{asset.pair} Volume {volume} is below minimum required {ordermin}, increasing volume."

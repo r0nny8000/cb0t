@@ -1,7 +1,7 @@
 """Timer-triggered accumulation functions."""
 import logging
 import azure.functions as func
-from cb0t.asset_pairs import BTCEUR, ETHEUR, SOLEUR, PAXGEUR
+from assets.asset_pairs import BTCEUR, ETHEUR, SOLEUR, PAXGEUR
 from services.trading import accumulate
 
 

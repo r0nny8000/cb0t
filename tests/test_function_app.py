@@ -1,7 +1,7 @@
 import function_app as app
 
-from cb0t.asset_pairs import *
-from cb0t.asset import Asset
+from assets.asset_pairs import *
+from assets.asset import Asset
 
 
 def test_get_balance():

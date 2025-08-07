@@ -2,7 +2,7 @@
 import logging
 import azure.functions as func
 from services.cost_basis import calculate_cost_basis
-from cb0t.asset_pairs import BTCEUR, ETHEUR, SOLEUR, PAXGEUR
+from assets.asset_pairs import BTCEUR, ETHEUR, SOLEUR, PAXGEUR
 from utils.html_renderer import html
 from utils.kraken_client import user
 

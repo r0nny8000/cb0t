@@ -1,6 +1,6 @@
 """ imports """
-from cb0t.asset_pairs import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from cb0t.asset import Asset
+from assets.asset_pairs import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from assets.asset import Asset
 
 btcusd = BTCUSD()
 

@@ -2,7 +2,7 @@
 Module for the BTCUSD asset representation, extending the Asset class for the BTC/USD trading pair.
 """
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from cb0t.asset import Asset
+from assets.asset import Asset
 
 
 class BTCUSD(Asset):

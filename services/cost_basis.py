@@ -1,6 +1,6 @@
 """Cost basis calculation service."""
 import logging
-from cb0t.asset import Asset
+from assets.asset import Asset
 from kraken.exceptions import KrakenUnknownAssetError
 from utils.kraken_client import user
 
