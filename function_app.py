@@ -19,10 +19,10 @@ from cb0t.asset import Asset
 app = func.FunctionApp()
 
 
-user = User(key=os.getenv('KRAKENAPIKEY'), secret=os.getenv('KRAKENAPISECRET'))
-trade = Trade(key=os.getenv('KRAKENAPIKEY'), secret=os.getenv('KRAKENAPISECRET'))
-env = os.getenv('CB0TENV', 'DEV')
-env_schedule = {'DEV': '*/20 * * * * *', 'PROD': '0 0 16 * * *'}
+user = User(key=os.getenv("KRAKENAPIKEY"), secret=os.getenv("KRAKENAPISECRET"))
+trade = Trade(key=os.getenv("KRAKENAPIKEY"), secret=os.getenv("KRAKENAPISECRET"))
+env = os.getenv("CB0TENV", "DEV")
+env_schedule = {"DEV": "*/20 * * * * *", "PROD": "0 0 16 * * *"}
 
 # Set up the Jinja2 environment once, at the module level
 template_dir = os.path.join(os.path.dirname(__file__), "cb0t/html/")
@@ -41,7 +41,9 @@ def html(template: str, *args, **kwargs) -> func.HttpResponse:
     Renders the HTML template with the current environment and schedule.
     """
     template = jinja_env.get_template(template)
-    return func.HttpResponse(template.render(*args, **kwargs), mimetype="text/html", status_code=200)
+    return func.HttpResponse(
+        template.render(*args, **kwargs), mimetype="text/html", status_code=200
+    )
 
 
 @app.route(route="{*path}", auth_level="anonymous", methods=["GET"])
@@ -57,11 +59,11 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     """
 
     # Extracting the 'pair' parameter from the request.
-    pair = req.params.get('pair')
+    pair = req.params.get("pair")
 
     if not pair:
         # Default to Bitcoin in EUR if no pair is provided.
-        pair = 'XXBTZEUR,XETHZEUR,SOLEUR,PAXGEUR'
+        pair = "XXBTZEUR,XETHZEUR,SOLEUR,PAXGEUR"
 
     # If 'pair' is provided, fetch the ticker information.
     logging.debug("Ticker function is processing with pair: %s", pair)
@@ -72,13 +74,20 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
         assets = Market().get_asset_pairs(pair)
         asset_pair = Market().get_asset_pairs(pair)
 
-        logging.debug('Ticker data: %s', ticker)
+        logging.debug("Ticker data: %s", ticker)
 
     except (KrakenUnknownAssetError, KrakenUnknownAssetPairError) as e:
         logging.error(str(e))
         return func.HttpResponse(str(e), status_code=500)
 
-    return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets, asset_pair=asset_pair)
+    return html(
+        template="ticker.html.j2",
+        pair=pair,
+        ticker=ticker,
+        assets=assets,
+        asset_pair=asset_pair,
+    )
+
 
 def calculate_cost_basis(asset: Asset, amount: float) -> float:
     """Calculates the cost basis for a given asset and amount."""
@@ -93,12 +102,12 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
 
             trades = user.get_trades_history(ofs=offset)
 
-            if not trades or 'trades' not in trades:
+            if not trades or "trades" not in trades:
                 break
 
-            all_trades.update(trades['trades'])
+            all_trades.update(trades["trades"])
 
-            if len(trades['trades']) < 50:
+            if len(trades["trades"]) < 50:
                 break
 
             offset += 50
@@ -108,35 +117,35 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
         return None
 
     # Filter trades for the specific asset pair.
-    filtered_trades = {k: v for k, v in all_trades.items() if v['pair'] == asset.pair}
-
+    filtered_trades = {k: v for k, v in all_trades.items() if v["pair"] == asset.pair}
 
     amount_counter = amount
     cost_basis = 0.0
 
     # Iterate through the trades to calculate the cost basis.
     for trade_id, trade in all_trades.items():
-        if trade['pair'] == asset.pair:
-            if trade['type'] == 'buy':
-                amount_counter -= float(trade['vol'])
+        if trade["pair"] == asset.pair:
+            if trade["type"] == "buy":
+                amount_counter -= float(trade["vol"])
                 amount_counter = round(amount_counter, 8)
-                cost_basis += float(trade['cost'])
-                cost_basis += float(trade['fee'])
-                #print (f"{asset.pair} {trade['vol']} at cost {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
+                cost_basis += float(trade["cost"])
+                cost_basis += float(trade["fee"])
+                # print (f"{asset.pair} {trade['vol']} at cost {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
                 if amount_counter <= 0:
                     break
-            elif trade['type'] == 'sell':
-                amount_counter += float(trade['vol'])
+            elif trade["type"] == "sell":
+                amount_counter += float(trade["vol"])
                 amount_counter = round(amount_counter, 8)
-                cost_basis -= float(trade['cost'])
-                #cost_basis += float(trade['fee'])
-                #print_json(trade)
-                #print (f"{asset.pair} {trade['vol']} at win {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
+                cost_basis -= float(trade["cost"])
+                # cost_basis += float(trade['fee'])
+                # print_json(trade)
+                # print (f"{asset.pair} {trade['vol']} at win {trade['cost']} =>  Counter: {amount_counter} Cost basis: {cost_basis}")
 
-    cost_basis = cost_basis * 1.004 # adding kraken fee of 0.4% if selling the position in future
+    cost_basis = (
+        cost_basis * 1.004
+    )  # adding kraken fee of 0.4% if selling the position in future
     cost_basis = round(cost_basis, 2)
     return cost_basis
-
 
 
 @app.route(route="balance", auth_level="anonymous", methods=["GET"])
@@ -144,12 +153,11 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
     """Fetches and returns the account balance from Kraken."""
     account_balance = user.get_account_balance()
 
-
     asset_to_EUR_map = {
-        'XXBT': BTCEUR(),
-        'XETH': ETHEUR(),
-        'SOL': SOLEUR(),
-        'PAXG': PAXGEUR(),
+        "XXBT": BTCEUR(),
+        "XETH": ETHEUR(),
+        "SOL": SOLEUR(),
+        "PAXG": PAXGEUR(),
     }
 
     balance = {}
@@ -161,8 +169,15 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
         if amount == 0:
             continue
 
-        if asset == 'ZEUR':
-            balance[asset] = { 'amount': round(amount, 2), 'price': 0, 'cost_basis': 0, 'average_price': 0, 'unrealized_pnl': 0, 'unrealized_pnl_pct': 0 }
+        if asset == "ZEUR":
+            balance[asset] = {
+                "amount": round(amount, 2),
+                "price": 0,
+                "cost_basis": 0,
+                "average_price": 0,
+                "unrealized_pnl": 0,
+                "unrealized_pnl_pct": 0,
+            }
             continue
 
         asset_pair = asset_to_EUR_map[asset]
@@ -174,14 +189,21 @@ def get_balance(req: func.HttpRequest) -> func.HttpResponse:
         cost_basis = calculate_cost_basis(asset_pair, amount)
 
         balance[asset] = {
-            'amount': amount,
-            'price': amount * asset_pair.get_asset_price(),
-            'cost_basis': cost_basis,
-            'average_price': cost_basis / amount if amount > 0 else 0,
-            'unrealized_pnl': asset_pair.get_asset_price() * amount - cost_basis,
-            'unrealized_pnl_pct': ((asset_pair.get_asset_price() * amount - cost_basis) / cost_basis * 100) if cost_basis > 0 else 0
+            "amount": amount,
+            "price": amount * asset_pair.get_asset_price(),
+            "cost_basis": cost_basis,
+            "average_price": cost_basis / amount if amount > 0 else 0,
+            "unrealized_pnl": asset_pair.get_asset_price() * amount - cost_basis,
+            "unrealized_pnl_pct": (
+                (
+                    (asset_pair.get_asset_price() * amount - cost_basis)
+                    / cost_basis
+                    * 100
+                )
+                if cost_basis > 0
+                else 0
+            ),
         }
-
 
     return html(template="balance.html.j2", balance=balance)
 
@@ -192,7 +214,12 @@ def get_env(req: func.HttpRequest) -> func.HttpResponse:
     return html("env.html.j2", env=env)
 
 
-@app.timer_trigger(schedule=env_schedule[env], arg_name="timer", run_on_startup=False, use_monitor=False)
+@app.timer_trigger(
+    schedule=env_schedule[env],
+    arg_name="timer",
+    run_on_startup=False,
+    use_monitor=False,
+)
 def accumulate_assets(timer: func.TimerRequest) -> None:
     """Accumulates crypto periodically."""
     if timer.past_due:
@@ -210,9 +237,6 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
 
     paxgeur = PAXGEUR()
     accumulate(paxgeur, paxgeur.RSI_below(30), 8)
-
-
-
 
 
 def accumulate(asset: Asset, condition: bool, euro: float) -> None:
@@ -234,27 +258,30 @@ def accumulate(asset: Asset, condition: bool, euro: float) -> None:
         # check if minimum volume is met
         asset_pair = Market().get_asset_pairs(asset.pair)
 
-        ordermin = float(asset_pair[asset.pair]['ordermin'])
+        ordermin = float(asset_pair[asset.pair]["ordermin"])
         if volume < ordermin:
-            logging.info('%s Volume %f is below minimum required %f, increasing volume.', asset.pair, volume, ordermin)
+            logging.info(
+                "%s Volume %f is below minimum required %f, increasing volume.",
+                asset.pair,
+                volume,
+                ordermin,
+            )
             volume = ordermin
 
-        logging.info('%s Accumulating %f with %f EUR',
-                     asset.pair, volume, accelerated_euro)
+        logging.info(
+            "%s Accumulating %f with %f EUR", asset.pair, volume, accelerated_euro
+        )
 
         # check if environment is set to PROD
-        if env != 'PROD':
-            raise RuntimeError(f'Not in production environment: {env}')
+        if env != "PROD":
+            raise RuntimeError(f"Not in production environment: {env}")
 
         # create order
-        transaction = trade.create_order(ordertype='market',
-                                         pair=asset.pair,
-                                         side='buy',
-                                         volume=volume)  # pylint: disable=line-too-long
+        transaction = trade.create_order(
+            ordertype="market", pair=asset.pair, side="buy", volume=volume
+        )  # pylint: disable=line-too-long
 
-        logging.info('%s Order created: %s', asset.pair, transaction)
+        logging.info("%s Order created: %s", asset.pair, transaction)
 
     except Exception as e:  # pylint: disable=broad-except
-        logging.error('%s %s', asset.pair, str(e).replace('\n', ' '))
-
-
+        logging.error("%s %s", asset.pair, str(e).replace("\n", " "))
