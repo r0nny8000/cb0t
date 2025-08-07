@@ -1,0 +1,43 @@
+"""Trading and accumulation service."""
+import os
+import logging
+from kraken.spot import Market
+from cb0t.asset import Asset
+from utils.kraken_client import trade
+
+
+def accumulate(asset: Asset, condition: bool, euro: float) -> None:
+    """Accumulates a specified cryptocurrency by checking the trend and bottom conditions."""
+    if not condition:
+        logging.info(f"{asset.pair} Skipping accumulation, conditions not met.")
+        return
+
+    try:
+        logging.info(f"{asset.pair} Accumulating BTC.")
+
+        accelerated_euro = asset.accelerate(euro)
+        volume = round(accelerated_euro / asset.get_asset_price(), 8)
+
+        asset_pair = Market().get_asset_pairs(asset.pair)
+        ordermin = float(asset_pair[asset.pair]["ordermin"])
+        
+        if volume < ordermin:
+            logging.info(
+                f"{asset.pair} Volume {volume} is below minimum required {ordermin}, increasing volume."
+            )
+            volume = ordermin
+
+        logging.info(f"{asset.pair} Accumulating {volume} with {accelerated_euro} EUR")
+
+        env = os.getenv("CB0TENV", "DEV")
+        if env != "PROD":
+            raise RuntimeError(f"Not in production environment: {env}")
+
+        transaction = trade.create_order(
+            ordertype="market", pair=asset.pair, side="buy", volume=volume
+        )
+
+        logging.info(f"{asset.pair} Order created: {transaction}")
+
+    except Exception as e:
+        logging.error(f"{asset.pair} {str(e).replace(chr(10), ' ')}")
