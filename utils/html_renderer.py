@@ -4,7 +4,7 @@ import json
 import azure.functions as func
 from jinja2 import Environment, FileSystemLoader
 
-template_dir = os.path.join(os.path.dirname(__file__), "../cb0t/html/")
+template_dir = os.path.join(os.path.dirname(__file__), "../html/")
 jinja_env = Environment(loader=FileSystemLoader(template_dir))
 
 
