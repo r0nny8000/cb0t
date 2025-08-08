@@ -3,10 +3,17 @@ Code Style
 
 DocStrings
 ----------
-If a function or method has no docstring, please generate a docstring whit only one line and less than 120 characters. Do not document parameters. Some special methods like __init__ do not require a docstring. Do not genereate an Args and Returns section.
+- If a function or method has no docstring, please generate a docstring whitin only one line and less than 120 characters.
+- Do not document parameters.
+- Some special methods like __init__ do not require a docstring.
+- Do not genereate an Args and Returns section.
 
 String Formating
 ----------------
-Use f-strings for string formatting. Avoid using the format() method or the % operator.
+- Use f-strings for string formatting. Avoid using the format() method or the % operator.
+- Example: `f"Hello, {name}!"` instead of `"Hello, {}".format(name)` or `"Hello, %s" % name`.
 
-
+Follows PEP 8 guidelines automatically
+--------------------------------------
+- Clear separation of concerns
+- Maintainable and testable code structure
