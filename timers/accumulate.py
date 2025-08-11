@@ -1,7 +1,7 @@
 """Timer-triggered accumulation functions."""
 import logging
 import azure.functions as func
-from assets.asset_pairs import BTCEUR, ETHEUR, SOLEUR, PAXGEUR
+from assets.asset_pairs import BTCEUR, ETHEUR, SOLEUR
 from services.trading import accumulate
 
 
@@ -18,6 +18,3 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
 
     soleur = SOLEUR()
     accumulate(soleur, soleur.RSI_below(35), 4)
-
-    paxgeur = PAXGEUR()
-    accumulate(paxgeur, paxgeur.RSI_below(30), 8)
