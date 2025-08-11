@@ -13,7 +13,7 @@ String Formating
 - Use f-strings for string formatting. Avoid using the format() method or the % operator.
 - Example: `f"Hello, {name}!"` instead of `"Hello, {}".format(name)` or `"Hello, %s" % name`.
 
-Follows PEP 8 guidelines automatically
---------------------------------------
+Follow PEP 8 guidelines automatically
+-------------------------------------
 - Clear separation of concerns
 - Maintainable and testable code structure
