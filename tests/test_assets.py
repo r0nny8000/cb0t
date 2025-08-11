@@ -67,16 +67,20 @@ def test_sma():
     Test the SMA method of the BTCUSD class.
     """
     # force class to calculate the dataframes
+    # data frames are calculated lazily, so we need to access them to trigger the calculation
     assert btcusd.get_df_1d() is not None
     assert btcusd.get_df_1w() is not None
 
 
     # daily data frame
+    # check if the columns are present in the data frame
+    # if not the calculation was not triggered and the test should fail
     assert 'time' in btcusd.get_df_1d()
     assert 'close' in btcusd.get_df_1d()
     assert 'time' in btcusd.get_df_1w()
     assert 'close' in btcusd.get_df_1w()
 
+    # Calculate the simple Moving Average
     assert 'sma_50' not in btcusd.get_df_1d()
     assert 'sma_50' not in btcusd.get_df_1w()
     assert btcusd.calculate_sma(50) is not None
