@@ -1,12 +1,21 @@
 """Cost basis calculation service."""
+
 import logging
+from decimal import Decimal, getcontext
 from assets.asset import Asset
 from kraken.exceptions import KrakenUnknownAssetError
 from utils.kraken_client import user
 
+# Set decimal precision for financial calculations
+getcontext().prec = 10
+
 
 def calculate_cost_basis(asset: Asset, amount: float) -> float:
     """Calculates the cost basis for a given asset and amount."""
+
+    # Fetch all trades for the user
+    # 50 is the maximum number of trades to fetch in a single request
+    # therefore we need to increase the offset and repeat the request until all trades are received
     try:
         all_trades = {}
         offset = 0
@@ -28,22 +37,32 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
         logging.error(str(e))
         return None
 
-    amount_counter = amount
-    cost_basis = 0.0
+    # now we have a complete list of trades for the asset
+    # we start now calculating back the cost basis
+    amount_counter = Decimal(str(amount))
+    cost_basis = Decimal('0.0')
 
+    # Iterate over all trades to calculate the cost basis
+    logging.info(f"Calculating cost basis for {asset.pair} with amount {amount}")
     for trade_id, trade in all_trades.items():
+
+        # Check if the trade is for the specified asset pair, skip otherwise
         if trade["pair"] == asset.pair:
+
+
+            logging.info(f"Processing 0: {trade_id}  {trade['vol']} {trade['cost']} {trade['fee']} Counter: {amount_counter} Cost Basis: {cost_basis}")
+            # If the trade is a buy, we subtract the volume from the amount counter
             if trade["type"] == "buy":
-                amount_counter -= float(trade["vol"])
-                amount_counter = round(amount_counter, 8)
-                cost_basis += float(trade["cost"])
-                cost_basis += float(trade["fee"])
+                amount_counter -= Decimal(str(trade["vol"]))
+                cost_basis += (Decimal(str(trade["cost"])) + Decimal(str(trade["fee"])))
+
+                logging.info(f"Processing 1: {trade_id} {trade['vol']} {trade['cost']} {trade['fee']} Counter: {amount_counter} Cost Basis: {cost_basis}")
                 if amount_counter <= 0:
                     break
-            elif trade["type"] == "sell":
-                amount_counter += float(trade["vol"])
-                amount_counter = round(amount_counter, 8)
-                cost_basis -= float(trade["cost"])
 
-    cost_basis = cost_basis * 1.004  # Adding kraken fee of 0.4%
-    return round(cost_basis, 2)
+            elif trade["type"] == "sell":
+                amount_counter += Decimal(str(trade["vol"]))
+                cost_basis -= Decimal(str(trade["cost"]))
+
+    # Fees are already included in individual trades
+    return round(float(cost_basis), 2)
