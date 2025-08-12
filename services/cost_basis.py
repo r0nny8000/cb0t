@@ -53,7 +53,7 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
             trade_cost = Decimal(str(trade["cost"]))
             trade_fee = Decimal(str(trade["fee"]))
 
-            logging.info(f"Processing 0: {trade_id}  {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
+            logging.info(f"Processing start: {trade_id} {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
             # If the trade is a buy, we subtract the volume from the amount counter
             if trade["type"] == "buy":
 
@@ -67,7 +67,7 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
                     amount_counter -= trade_vol
                     cost_basis += (trade_cost + trade_fee)
 
-                logging.info(f"Processing 1: {trade_id} {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
+                logging.info(f"Processing   buy: {trade_id} {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
 
                 if amount_counter == 0:
                     break
@@ -76,6 +76,8 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
             elif trade["type"] == "sell":
                 amount_counter += trade_vol
                 cost_basis -= trade_cost
+                logging.info(f"Processing  sell: {trade_id} {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
+
 
     # Fees are already included in individual trades
     return round(float(cost_basis), 2)
