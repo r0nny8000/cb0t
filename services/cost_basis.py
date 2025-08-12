@@ -49,20 +49,33 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
         # Check if the trade is for the specified asset pair, skip otherwise
         if trade["pair"] == asset.pair:
 
+            trade_vol = Decimal(str(trade["vol"]))
+            trade_cost = Decimal(str(trade["cost"]))
+            trade_fee = Decimal(str(trade["fee"]))
 
-            logging.info(f"Processing 0: {trade_id}  {trade['vol']} {trade['cost']} {trade['fee']} Counter: {amount_counter} Cost Basis: {cost_basis}")
+            logging.info(f"Processing 0: {trade_id}  {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
             # If the trade is a buy, we subtract the volume from the amount counter
             if trade["type"] == "buy":
-                amount_counter -= Decimal(str(trade["vol"]))
-                cost_basis += (Decimal(str(trade["cost"])) + Decimal(str(trade["fee"])))
 
-                logging.info(f"Processing 1: {trade_id} {trade['vol']} {trade['cost']} {trade['fee']} Counter: {amount_counter} Cost Basis: {cost_basis}")
-                if amount_counter <= 0:
+                # if the trade is bigger than the amount counter, we need to split the trade
+                # to meet the remaining amount of the amount_counter
+                if amount_counter < trade_vol:
+                    cost_basis += ((trade_cost + trade_fee) * amount_counter) / trade_vol
+                    amount_counter = 0
+
+                else:
+                    amount_counter -= trade_vol
+                    cost_basis += (trade_cost + trade_fee)
+
+                logging.info(f"Processing 1: {trade_id} {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
+
+                if amount_counter == 0:
                     break
 
+
             elif trade["type"] == "sell":
-                amount_counter += Decimal(str(trade["vol"]))
-                cost_basis -= Decimal(str(trade["cost"]))
+                amount_counter += trade_vol
+                cost_basis -= trade_cost
 
     # Fees are already included in individual trades
     return round(float(cost_basis), 2)
