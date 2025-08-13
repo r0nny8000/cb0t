@@ -78,6 +78,9 @@ def calculate_cost_basis(asset: Asset, amount: float) -> float:
                 cost_basis -= trade_cost
                 logging.info(f"Processing  sell: {trade_id} {trade_vol} {trade_cost} {trade_fee} Counter: {amount_counter} Cost Basis: {cost_basis}")
 
+    # finally we need to add the trading fees to sell the amount if assets
+    # the trading fee for this is 0.4% at Kraken exchange
+    # this fee we need to add always, to use the cost base as stop loss value
+    cost_basis += (cost_basis * Decimal('0.004'))
 
-    # Fees are already included in individual trades
     return round(float(cost_basis), 2)
