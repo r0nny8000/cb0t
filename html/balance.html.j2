@@ -1,58 +1,45 @@
 {% extends "base.html.j2" %} {% set active_page = "balance" %} {% block content %}
 
-<ul>
-    {% for key, value in balance.items() %} {% if value|float %}
-    <li>
-        {{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR')}}: {{ value|float|round(8) }}
-    </li>
-    {% endif %} {% endfor %}
-</ul>
 
-<div class="table-responsive">
-    <table class="table table-dark table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Asset</th>
-                <th scope="col" style="text-align: right;">Balance</th>
-                <th scope="col" style="text-align: right;">Price</th>
-                <th scope="col" style="text-align: right;">Cost Basis</th>
-                <th scope="col" style="text-align: right;">Average Price</th>
-                <th scope="col" style="text-align: right;">Unrealized PnL</th>
-                <th scope="col" style="text-align: right;">Unrealized PnL %</th>
-            </tr>
-        </thead>
-        <tbody>
+{% for key, value in balance.items() %}
+<div class="container">
 
-            {% for key, value in balance.items() %}
-            <tr>
-                <td>{{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR')}}</td>
-                <td style="text-align: right; white-space: nowrap;">{{ value['amount']|float|round(8) }}</td>
-                <td style="text-align: right; white-space: nowrap;">{% if value['price'] %} {{
-                    value['price']|float|round(2) }} €{% endif %}
-                </td>
-                <td style="text-align: right; white-space: nowrap;">{% if value['cost_basis'] %} {{
-                    value['cost_basis']|float|round(2) }} €{%
-                    endif %}</td>
-                <td style="text-align: right; white-space: nowrap;">{% if value['average_price'] %} {{
-                    value['average_price']|float|round(2)
-                    }} €{% endif %}</td>
-                <td {% if value['unrealized_pnl']> 0 %} class="text-success" {% endif %}
-                    {% if value['unrealized_pnl'] < 0 %} class="text-danger" {% endif %}
-                        style="text-align: right; white-space: nowrap;">{%
-                        if value['unrealized_pnl'] %} {{
-                        value['unrealized_pnl']|float|round(2) }} €{% endif %}</td>
+    <div class="row">
+        <div class="col-md-2 fs-4 fw-bold text-info p-2">
+            {{ key|replace('XXBT', 'BTC')|replace('XETH', 'ETH')|replace('ZEUR', 'EUR')}}
+        </div>
+        <div class="col-md-2 text-end text-nowrap p-2 overflow-hidden"><span
+                class="text-secondary fw-light">Balance</span><br>
+                    {{ value['amount']|float|round(8) }}
+                </div>
 
-                <td {% if value['unrealized_pnl_pct']> 0 %} class="text-success" {% endif %}
-                    {% if value['unrealized_pnl_pct'] < 0 %} class="text-danger" {% endif %}
-                        style="text-align:right; white-space: nowrap;">
-                        {% if value['unrealized_pnl_pct'] %} {{ value['unrealized_pnl_pct']|float|round(1) }} %{% endif
-                        %}
-                </td>
-            </tr>
-            {% endfor %}
+        <div class="col-md-2 text-end text-nowrap p-2 overflow-hidden"><span
+                class="text-secondary fw-light">Price</span><br>
+                    {% if value['price'] %} {{ value['price']|float|round(2) }} €{% endif %}
+                </div>
 
-        </tbody>
-    </table>
+        <div class="col-md-2 text-end text-nowrap p-2 overflow-hidden"><span class="text-secondary fw-light">Cost
+                Basis</span><br>
+                {% if value['cost_basis'] %}
+                    {{ value['cost_basis']|float|round(2) }} €
+                {% endif %}</div>
+
+        <div class="col-md-2 text-end text-nowrap p-2 overflow-hidden"><span class="text-secondary fw-light">Average
+                Price</span><br>
+                    {% if value['average_price'] %}
+                        {{ value['average_price']|float|round(2) }} €
+                    {% endif %}</div>
+
+
+        <div class="col-md-2 text-end text-nowrap p-2 overflow-hidden"><span class="text-secondary fw-light">Unrealized
+                PnL</span><br>
+            {% if value['unrealized_pnl'] and value['unrealized_pnl_pct'] %}
+                {{ value['unrealized_pnl']|float|round(2) }} €
+                ({{ value['unrealized_pnl_pct']|float|round(1) }} %)
+            {% endif %}
+        </div>
+    </div>
 </div>
+{% endfor %}
 
 {% endblock %}
