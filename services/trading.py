@@ -6,11 +6,8 @@ from assets.asset import Asset
 from utils.kraken_client import trade
 
 
-def accumulate(asset: Asset, condition: bool, euro: float) -> None:
-    """Accumulates a specified cryptocurrency by checking the trend and bottom conditions."""
-    if not condition:
-        logging.info(f"{asset.pair} Skipping accumulation, conditions not met.")
-        return
+def accumulate(asset: Asset, euro: float) -> int:
+    """Accumulates a specified cryptocurrency by adjusting volume based on distance to ATH."""
 
     try:
         logging.info(f"{asset.pair} Accumulating BTC.")
@@ -38,6 +35,8 @@ def accumulate(asset: Asset, condition: bool, euro: float) -> None:
         )
 
         logging.info(f"{asset.pair} Order created: {transaction}")
+        return 1
 
     except Exception as e:
         logging.error(f"{asset.pair} {str(e).replace(chr(10), ' ')}")
+        return 0
