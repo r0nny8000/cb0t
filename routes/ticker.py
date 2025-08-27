@@ -18,7 +18,6 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     try:
         ticker = Market().get_ticker(pair)
         assets = Market().get_asset_pairs(pair)
-        asset_pair = Market().get_asset_pairs(pair)
 
         logging.debug(f"Ticker data: {ticker}")
 
@@ -30,6 +29,5 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
         template="ticker.html.j2",
         pair=pair,
         ticker=ticker,
-        assets=assets,
-        asset_pair=asset_pair,
+        assets=assets
     )

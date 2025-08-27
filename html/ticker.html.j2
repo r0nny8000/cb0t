@@ -20,8 +20,8 @@
             <td>{{ assets[key]['wsname']|replace('XBT', 'BTC') }}</td>
             <td>{{ key }}</td>
             <td style="text-align: right;">{{ value['c'][0]|float|round(2) }}</td>
-            <td style="text-align: right;">{{ "%.8f"|format(asset_pair[key]['ordermin']|float) }}</td>
-            <td style="text-align: right;">{{ "%.2f"|format(asset_pair[key]['ordermin']|float * value['c'][0]|float) }}</td>
+            <td style="text-align: right;">{{ "%.8f"|format(assets[key]['ordermin']|float) }}</td>
+            <td style="text-align: right;">{{ "%.2f"|format(assets[key]['ordermin']|float * value['c'][0]|float) }}</td>
         </tr>
         {% endfor %}
     </tbody>
