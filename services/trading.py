@@ -10,7 +10,6 @@ def accumulate(asset: Asset, euro: float) -> int:
     """Accumulates a specified cryptocurrency by adjusting volume based on distance to ATH."""
 
     try:
-        logging.info(f"{asset.pair} Accumulating BTC.")
 
         accelerated_euro = asset.accelerate(euro)
         volume = round(accelerated_euro / asset.get_asset_price(), 8)
