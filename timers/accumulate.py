@@ -20,9 +20,9 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     if (etheur.RSI_below(40) or etheur.below_Weekly_SMA(250)):
         assets_accumulated += accumulate(etheur, 8)
 
-    soleur = SOLEUR()
-    if (soleur.RSI_below(35)):
-        assets_accumulated += accumulate(soleur, 4)
+    # soleur = SOLEUR()
+    # if (soleur.RSI_below(35)):
+    #     assets_accumulated += accumulate(soleur, 4)
 
     logging.info(f"Total assets accumulated: {assets_accumulated}")
 
