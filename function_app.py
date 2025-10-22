@@ -19,9 +19,4 @@ app.route(route="env", auth_level="anonymous", methods=["GET"])(get_env)
 # Register timer trigger
 env = os.getenv("CB0TENV", "DEV")
 env_schedule = {"DEV": "*/20 * * * * *", "PROD": "0 0 16 * * *"}
-app.timer_trigger(
-    schedule=env_schedule[env],
-    arg_name="timer",
-    run_on_startup=False,
-    use_monitor=False,
-)(accumulate_assets)
+app.timer_trigger(schedule=env_schedule[env], arg_name="timer", run_on_startup=False, use_monitor=False)(accumulate_assets)
