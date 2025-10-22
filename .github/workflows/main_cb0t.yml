@@ -5,17 +5,13 @@ on:
     branches:
       - main
 
-# CONFIGURATION
-# For help, go to https://github.com/Azure/Actions
-#
-# 1. Set up the following secrets in your repository:
+#   Set up the following secrets in your repository:
 #   AZURE_FUNCTIONAPP_PUBLISH_PROFILE_4650536b83e04c52b81c07cdacfdccbf
-#
-# 2. Change these variables for your configuration:
+
 env:
-  AZURE_FUNCTIONAPP_NAME: 'cb0t'   # set this to your function app name on Azure
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'       # set this to the path to your function app project, defaults to the repository root
-  PYTHON_VERSION: '3.12'                     # set this to the python version to use (e.g. '3.6', '3.7', '3.8')
+  AZURE_FUNCTIONAPP_NAME: 'cb0t'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  PYTHON_VERSION: '3.12'
 
 jobs:
   build-and-deploy:
@@ -56,37 +52,3 @@ jobs:
         scm-do-build-during-deployment: true
         enable-oryx-build: true
 
-
-###############################################
-
-# name: Deploy Python project to Azure Function App
-
-# on:
-#   push:
-#     branches:
-#       - main
-#       - dev
-
-# env:
-#   PYTHON_VERSION: '3.12'
-
-# jobs:
-#   build-and-deploy-main:
-#     if: github.ref == 'refs/heads/main'
-#     runs-on: ubuntu-latest
-#     environment: dev
-#     env:
-#       AZURE_FUNCTIONAPP_NAME: 'cb0t'
-#       AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
-#     steps:
-#       # ... your steps here (same as before) ...
-
-#   build-and-deploy-dev:
-#     if: github.ref == 'refs/heads/dev'
-#     runs-on: ubuntu-latest
-#     environment: dev
-#     env:
-#       AZURE_FUNCTIONAPP_NAME: 'cb0t-dev'
-#       AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
-#     steps:
-#       # ... your steps here (same as before, but can use a different publish-profile secret if needed) ...
