@@ -3,7 +3,7 @@ Code Style
 
 DocStrings and Comments
 -----------------------
-- If a function or method has no docstring, please generate a docstring whitin only one line and less than 120 characters.
+- If a function or method has no docstring, please generate a docstring whitin only one line and less than 160 characters.
 - Do not document parameters.
 - Do not genereate an Args and Returns section.
 - Do not modify existing documentation. If there is documentation already present, leave it as is.
