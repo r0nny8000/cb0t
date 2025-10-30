@@ -1,4 +1,5 @@
 """Timer-triggered accumulation functions."""
+
 import logging
 import azure.functions as func
 from assets.asset_pairs import BTCEUR, ETHEUR, SOLEUR
@@ -13,11 +14,11 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     assets_accumulated = 0
 
     btceur = BTCEUR()
-    if (btceur.RSI_below(45) or btceur.below_Weekly_SMA(200)):
+    if btceur.RSI_below(40) or btceur.below_Weekly_SMA(200):
         assets_accumulated += accumulate(btceur, 8)
 
     etheur = ETHEUR()
-    if (etheur.RSI_below(40) or etheur.below_Weekly_SMA(250)):
+    if etheur.RSI_below(40) or etheur.below_Weekly_SMA(250):
         assets_accumulated += accumulate(etheur, 8)
 
     # soleur = SOLEUR()
