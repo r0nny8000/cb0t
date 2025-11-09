@@ -8,6 +8,7 @@ from datetime import datetime
 from kraken.spot import Market
 from kraken.exceptions import KrakenUnknownAssetError, KrakenUnknownAssetPairError
 from utils.html_renderer import html
+from utils.data_converter import ohlc_to_dataframe
 
 
 def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
@@ -45,21 +46,18 @@ def get_ticker(req: func.HttpRequest) -> func.HttpResponse:
     return html(template="ticker.html.j2", pair=pair, ticker=ticker, assets=assets, chart=chart)
 
 
-def _create_candlestick_chart(ohlc: dict, pair: str) -> str:
+def _create_candlestick_chart(ohlc_data: dict, pair: str) -> str:
     """Create interactive candlestick chart from OHLC data using Plotly."""
     fig = go.Figure()
 
     # Extract OHLC data
     data = []
-    for v in ohlc.values():
+    for v in ohlc_data.values():
         data = v
         break
 
     # Convert OHLC data to DataFrame
-    df = pd.DataFrame(data, columns=["time", "open", "high", "low", "close", "vwap", "volume", "count"])
-
-    # Convert timestamp to datetime
-    df["time"] = pd.to_datetime(df["time"], unit="s")
+    df = ohlc_to_dataframe(data)
 
     # Keep only the latest 365 data points
     df = df.tail(365)

@@ -5,6 +5,7 @@ import pandas as pd
 
 from kraken.spot import Market
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from utils.data_converter import ohlc_to_dataframe
 
 
 class AssetException(Exception):
@@ -70,13 +71,7 @@ class Asset:
         if len(data) != length and self.intervals_to_min[interval] < 10080:
             raise AssetException(f"Received {len(data)} data points for {pair} with interval {interval}, expected {length}.")
 
-        # Convert the data to a DataFrame
-        df = pd.DataFrame(data, columns=["time", "open", "high", "low", "close", "vwap", "volume", "count"])
-
-        # Convert the 'time' column to datetime format
-        df["time"] = pd.to_datetime(df["time"], unit="s")
-
-        return df
+        return ohlc_to_dataframe(data)
 
     def get_asset_price(self) -> float:
         """Fetches the current value for a given currency pair."""
