@@ -58,11 +58,11 @@ def _create_candlestick_chart(ohlc: dict, pair: str) -> str:
     # Convert OHLC data to DataFrame
     df = pd.DataFrame(data, columns=["time", "open", "high", "low", "close", "vwap", "volume", "count"])
 
-    # Keep only the latest 365 data points
-    df = df.tail(365)
-
     # Convert timestamp to datetime
     df["time"] = pd.to_datetime(df["time"], unit="s")
+
+    # Keep only the latest 365 data points
+    df = df.tail(365)
 
     # Add candlestick trace
     fig.add_trace(go.Candlestick(x=df["time"], open=df["open"], high=df["high"], low=df["low"], close=df["close"], name=pair))
