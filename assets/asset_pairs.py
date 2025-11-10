@@ -1,6 +1,7 @@
 """
 Module for the BTCUSD asset representation, extending the Asset class for the BTC/USD trading pair.
 """
+
 from kraken.exceptions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from assets.asset import Asset
 
@@ -11,6 +12,14 @@ class BTCUSD(Asset):
     def __init__(self):
         """Initializes the BTCUSD asset with the given pair."""
         super().__init__("XXBTZUSD")
+
+
+class BTCUSDC(Asset):
+    """Represents the BTCUSDC asset."""
+
+    def __init__(self):
+        """Initializes the BTCUSDC asset with the given pair."""
+        super().__init__("XBTUSDC")
 
 
 class BTCEUR(Asset):
