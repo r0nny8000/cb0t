@@ -7,3 +7,4 @@ python-kraken-sdk
 jinja2
 pandas
 plotly
+yfinance
