@@ -6,6 +6,6 @@ from utils.html_renderer import html
 
 
 def get_simulations(req: func.HttpRequest) -> func.HttpResponse:
-    """"""
+    """This function executes different simulations with the simple moving average inverstment approach."""
 
     return html("simulations.html.j2", env=None)
