@@ -1,4 +1,5 @@
 """HTML rendering utilities."""
+
 import os
 import json
 import azure.functions as func
@@ -11,9 +12,8 @@ jinja_env = Environment(loader=FileSystemLoader(template_dir))
 def html(template: str, *args, **kwargs) -> func.HttpResponse:
     """Renders the HTML template with the current environment and schedule."""
     template_obj = jinja_env.get_template(template)
-    return func.HttpResponse(
-        template_obj.render(*args, **kwargs), mimetype="text/html", status_code=200
-    )
+    kwargs["env"] = os.getenv("CB0TENV", "DEV")
+    return func.HttpResponse(template_obj.render(*args, **kwargs), mimetype="text/html", status_code=200)
 
 
 def print_json(obj: dict) -> None:

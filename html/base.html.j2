@@ -29,7 +29,6 @@
           <a class="nav-link {% if active_page == 'balance' %}active{% endif %}" href="/balance">Balance</a>
           <a class="nav-link {% if active_page == 'ticker' %}active{% endif %}" href="/ticker">Ticker</a>
           <a class="nav-link {% if active_page == 'simulations' %}active{% endif %}" href="/simulations">Simulations</a>
-          <a class="nav-link {% if active_page == 'env' %}active{% endif %}" href="/env">Environment</a>
           <a class="nav-link" href="/.auth/logout">Logout</a>
         </div>
 
@@ -53,6 +52,13 @@
     </div>
   </main>
 
+
+  <div class="container">
+    <footer class="py-3 my-4">
+
+      <p class="text-center text-body-secondary">Environment: {{ env }}</p>
+    </footer>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"

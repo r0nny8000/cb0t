@@ -6,7 +6,6 @@ from routes.index import index
 from routes.simulations import get_simulations
 from routes.ticker import get_ticker
 from routes.balance import get_balance
-from routes.env import get_env
 from timers.accumulate import accumulate_assets
 
 app = func.FunctionApp()
@@ -16,7 +15,6 @@ app.route(route="{*path}", auth_level="anonymous", methods=["GET"])(index)
 app.route(route="balance", auth_level="anonymous", methods=["GET"])(get_balance)
 app.route(route="ticker", auth_level="anonymous", methods=["GET"])(get_ticker)
 app.route(route="simulations", auth_level="anonymous", methods=["GET"])(get_simulations)
-app.route(route="env", auth_level="anonymous", methods=["GET"])(get_env)
 
 # Register timer trigger
 env = os.getenv("CB0TENV", "DEV")

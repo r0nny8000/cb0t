@@ -14,11 +14,11 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     assets_accumulated = 0
 
     btceur = BTCEUR()
-    if btceur.below_Weekly_SMA(200):
+    if btceur.below_Weekly_SMA(300):
         assets_accumulated += accumulate(btceur, 8)
 
     etheur = ETHEUR()
-    if etheur.below_Weekly_SMA(200):
+    if etheur.below_Weekly_SMA(300):
         assets_accumulated += accumulate(etheur, 4)
 
     # soleur = SOLEUR()

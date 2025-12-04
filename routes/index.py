@@ -1,4 +1,5 @@
 """Index route handler."""
+
 import azure.functions as func
 from utils.html_renderer import html
 
