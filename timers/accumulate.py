@@ -4,6 +4,7 @@ import logging
 import azure.functions as func
 from assets.asset_pairs import BTCEUR, ETHEUR, SOLEUR
 from services.trading import accumulate
+from datetime import datetime
 
 
 def accumulate_assets(timer: func.TimerRequest) -> None:
@@ -14,11 +15,11 @@ def accumulate_assets(timer: func.TimerRequest) -> None:
     assets_accumulated = 0
 
     btceur = BTCEUR()
-    if btceur.below_Weekly_SMA(300):
+    if btceur.below_Weekly_SMA(200) and datetime.now().day % 2 == 0:
         assets_accumulated += accumulate(btceur, 8)
 
     etheur = ETHEUR()
-    if etheur.below_Weekly_SMA(300):
+    if etheur.below_Weekly_SMA(200) and datetime.now().day % 2 == 0:
         assets_accumulated += accumulate(etheur, 4)
 
     # soleur = SOLEUR()
